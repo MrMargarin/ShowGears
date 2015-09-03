@@ -1,0 +1,56 @@
+
+package dvano.mysql.viewer;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+
+
+public class SubSQLTable {
+    private final String searchField = "Code"; //Имя поля по которому производится поиск товара(первичный ключ)
+    private DefaultTableModel subTable;
+    private MySQLConnector con;
+    private Vector<String> colNames;
+
+    public SubSQLTable(MySQLConnector con) 
+    {
+        colNames = new Vector<String>();
+        colNames.add("Код товара");colNames.add("Поставщик");colNames.add("НаименованиеПоставщика");colNames.add("Цена");colNames.add("Наличие");
+        this.con = con;
+    }
+    
+    public void fillTable(String codeFieldName, String catTableName) throws SQLException
+    {
+        String sqls = "select * from sub"+catTableName+" where "+searchField+" like \'"+codeFieldName+"\'";
+        ResultSet rs = con.getResultSet(sqls);
+        ResultSetMetaData data = rs.getMetaData();
+        //==================================read-col-names======================
+        //Vector<Object> columns = new Vector<>();
+        Vector<Vector<Object>> values = new Vector<>();
+        int maxColumns = data.getColumnCount();
+        //for (int i = 1; i <= maxColumns; i++) 
+        //    columns.add(data.getColumnName(i));
+        //==================================read-data===========================
+        while (rs.next()) {
+            Vector<Object> value = new Vector<>();
+            for (int i = 1; i <= maxColumns; i++) 
+                value.add(con.getResultSet().getObject(i));
+            values.add(value);
+        }
+        
+        subTable = new DefaultTableModel(values, colNames);
+    }
+    
+    public void closeConec() throws SQLException
+    {
+        this.con.disconnect();
+    }
+    
+    public DefaultTableModel getSubTab()
+    { return subTable;}
+    
+    
+    
+}
