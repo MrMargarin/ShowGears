@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="tableSQL_om.SubtabletapndieEntity" table="subtabletapndie" schema="" catalog="metgears_db">
+        <id name="id">
+            <column name="id" sql-type="mediumint unsigned" not-null="true"/>
+        </id>
+        <property name="code">
+            <column name="Code" sql-type="int"/>
+        </property>
+        <property name="name">
+            <column name="Name" sql-type="varchar" length="2979"/>
+        </property>
+        <property name="названиеПоставщика">
+            <column name="Название поставщика" sql-type="varchar" length="27"/>
+        </property>
+        <property name="ценаИзПрайса">
+            <column name="Цена (из прайса)" sql-type="varchar" length="8"/>
+        </property>
+        <property name="наличиеИзПрайсЛиста">
+            <column name="Наличие (из прайс-листа)" sql-type="varchar" length="57"/>
+        </property>
+        <many-to-one name="tabletapndieByCode" class="tableSQL_om.TabletapndieEntity">
+            <column name="Code"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>

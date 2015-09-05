@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="MySQL - @localhost" uuid="6f67ca39-d8b8-4ee3-a3d8-7ffd6783f378">
+    <database-info product="MySQL" version="5.5.25" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.36 ( Revision: 4fc1f969f740409a4e03750316df2c0e429f3dc8 )">
+      <extra-name-characters>#@</extra-name-characters>
+      <identifier-quote-string>`</identifier-quote-string>
+    </database-info>
+    <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower"/>
+    <schema name="" catalog="metgears_db"/>
+    <table name="subtabledrill" schema="" catalog="metgears_db" type="TABLE">
+      <column name="id" sqlType="MEDIUMINT UNSIGNED" precision="8" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="Code" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="Name" sqlType="VARCHAR" precision="276" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Название поставщика" sqlType="VARCHAR" precision="34" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Цена (из прайса)" sqlType="VARCHAR" precision="7" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Наличие (из прайс-листа)" sqlType="VARCHAR" precision="68" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="FK_subtabledrill_tabledrill" columns="Code" ref-table="tabledrill" ref-schema="" ref-catalog="metgears_db" ref-columns="Code" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="FK_subtabledrill_tabledrill" unique="false" columns="Code"/>
+    </table>
+    <table name="subtabletapndie" schema="" catalog="metgears_db" type="TABLE">
+      <column name="id" sqlType="MEDIUMINT UNSIGNED" precision="8" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="Code" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="Name" sqlType="VARCHAR" precision="2979" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Название поставщика" sqlType="VARCHAR" precision="27" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Цена (из прайса)" sqlType="VARCHAR" precision="8" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Наличие (из прайс-листа)" sqlType="VARCHAR" precision="57" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="FK_subtabletapndie_tabletapndie" columns="Code" ref-table="tabletapndie" ref-schema="" ref-catalog="metgears_db" ref-columns="Code" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="FK_subtabletapndie_tabletapndie" unique="false" columns="Code"/>
+    </table>
+    <table name="tabledrill" schema="" catalog="metgears_db" type="TABLE">
+      <column name="Code" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Name" sqlType="VARCHAR" precision="121" scale="0" nullable="true" jdbcType="12"/>
+      <column name="CatName" sqlType="VARCHAR" precision="49" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="Code"/>
+      <exported-key name="FK_subtabledrill_tabledrill" table="subtabledrill" schema="" catalog="metgears_db" columns="Code"/>
+      <index name="unique_Code" unique="true" columns="Code"/>
+    </table>
+    <table name="tabletapndie" schema="" catalog="metgears_db" type="TABLE">
+      <column name="Code" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Name" sqlType="VARCHAR" precision="245" scale="0" nullable="true" jdbcType="12"/>
+      <column name="CatName" sqlType="VARCHAR" precision="215" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="Code"/>
+      <exported-key name="FK_subtabletapndie_tabletapndie" table="subtabletapndie" schema="" catalog="metgears_db" columns="Code"/>
+      <index name="unique_Code" unique="true" columns="Code"/>
+    </table>
+  </data-source>
+</component>

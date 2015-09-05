@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="tableSQL_om.TabletapndieEntity" table="tabletapndie" schema="" catalog="metgears_db">
+        <id name="code">
+            <column name="Code" sql-type="int" not-null="true"/>
+        </id>
+        <property name="name">
+            <column name="Name" sql-type="varchar" length="245"/>
+        </property>
+        <property name="catName">
+            <column name="CatName" sql-type="varchar" length="215"/>
+        </property>
+        <set name="subtabletapndiesByCode" inverse="true">
+            <key>
+                <column name="Code"/>
+            </key>
+            <one-to-many not-found="ignore" class="tableSQL_om.SubtabletapndieEntity"/>
+        </set>
+    </class>
+</hibernate-mapping>
