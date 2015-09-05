@@ -1,11 +1,12 @@
 
-package dvano.mysql.viewer;
+package table_models;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+import mai_n.MySQLConnector;
 
 
 public class SubSQLTable {

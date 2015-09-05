@@ -1,7 +1,8 @@
-package dvano.mysql.viewer;
+package table_models;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
+import mai_n.MySQLConnector;
 
 
 
@@ -53,7 +54,7 @@ public class OrderTable extends DefaultTableModel{
         
         prodData.concat(prodData);
         
-        con.execSQL("insert into "+);
+        //con.execSQL("insert into "+);
     }
     
 }

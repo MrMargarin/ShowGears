@@ -1,4 +1,4 @@
-package dvano.mysql.viewer;
+package Graphical_UI;
 
 import java.awt.BorderLayout;
 import javax.swing.JDialog;

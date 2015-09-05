@@ -1,6 +1,6 @@
 package classes;
 
-import dvano.mysql.viewer.MainSQLTable;
+import table_models.MainSQLTable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -1,4 +1,4 @@
-package dvano.mysql.viewer;
+package mai_n;
 
 import java.sql.Array;
 import java.sql.ResultSet;

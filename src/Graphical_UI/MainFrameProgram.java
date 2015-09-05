@@ -1,4 +1,4 @@
-package dvano.mysql.viewer;
+package Graphical_UI;
 
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
@@ -50,6 +50,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import mai_n.*;
+import table_models.*;
+
 public class MainFrameProgram extends JFrame {
 
     private final String namField = "Name"; //название поля наименований товаров, по которому проводится поиск
@@ -80,13 +83,13 @@ public class MainFrameProgram extends JFrame {
     
     private ParamList cats;
     //private String urlToDB = "jdbc:mysql://192.168.1.158/metlgears_db";
-    private String urlToDB = "jdbc:mysql://localhost/mingwd";
+    private String urlToDB = "jdbc:mysql://localhost/metgears_db";
     //private String[] tables = {"drill", "tapndie", "another" }; //difrent tables
     private String[] tables = {"tabledrill", "tabletapndie", "another" }; //difrent tables
     private JButton showt;
     private JButton mkoder;
     
-    MainFrameProgram() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+    public MainFrameProgram() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         Categories = new JComboBox(tables); //
         
@@ -156,13 +159,13 @@ public class MainFrameProgram extends JFrame {
             }
         });
         
-        mkoder = new JButton("Oder");
-        mkoder.addActionListener((ActionEvent e) -> {
-        
-            OrderTable = new JTable
-            
-            
-        });
+        //mkoder = new JButton("Oder");
+        //mkoder.addActionListener((ActionEvent e) -> {
+        //
+        //    OrderTable = new JTable
+        //    
+        //    
+        //});
 //====================================="Show"===================================
         show = new JButton("Search");
         //show.setIcon(new ImageIcon("images\\search_icon.png"));
@@ -286,7 +289,7 @@ public class MainFrameProgram extends JFrame {
         workPanel.add(search);
         workPanel.add(show);
         workPanel.add(discon);
-        workPanel.add(mkoder);
+        //workPanel.add(mkoder);
         
         inputPane.add(atrzPanel);
         inputPane.add(workPanel);

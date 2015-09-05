@@ -1,5 +1,6 @@
-package dvano.mysql.viewer;
+package mai_n;
 
+import Graphical_UI.MainFrameProgram;
 import java.awt.EventQueue;
 import java.sql.SQLException;
 import java.util.logging.Level;

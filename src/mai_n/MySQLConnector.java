@@ -1,4 +1,4 @@
-package dvano.mysql.viewer;
+package mai_n;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,35 +15,21 @@ public final class MySQLConnector {
     private ResultSet rs = null;
     private String USER, ADDR, PASS;
 
-//    MySQLConnector() throws ClassNotFoundException, SQLException {
-//        registerDriver();
-//        disconnect();
-//        connect("jdbc:mysql://192.168.1.158/sverlamg", "admin", "pool");
-//        getResultSet("select * from _sverla_");
-//    }
-//
-//    MySQLConnector(String sql) throws ClassNotFoundException, SQLException {
-//        registerDriver();
-//        disconnect();
-//        connect("jdbc:mysql://192.168.1.158/sverlamg", "admin", "pool");
-//        getResultSet(sql);
-//    }
-    
-    MySQLConnector(String ad, String us, String ps) throws ClassNotFoundException, SQLException {
+    public MySQLConnector(String ad, String us, String ps) throws ClassNotFoundException, SQLException {
         registerDriver();
         disconnect();
         USER = us; ADDR = ad; PASS = ps;
         connect(ad, us, ps);
     }
     
-    MySQLConnector(String ad, String us, String ps, String sql) throws ClassNotFoundException, SQLException {
+    public MySQLConnector(String ad, String us, String ps, String sql) throws ClassNotFoundException, SQLException {
         registerDriver();
         disconnect();
         USER = us; ADDR = ad; PASS = ps;
         connect(ad, us, ps);
         getResultSet(sql);
     }
-    
+
     public void registerDriver() throws ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
     }
