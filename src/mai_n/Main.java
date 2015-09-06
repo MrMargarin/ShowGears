@@ -1,50 +1,57 @@
 package mai_n;
 
-import Graphical_UI.MainFrameProgram;
-import java.awt.EventQueue;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.UnsupportedLookAndFeelException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.metadata.ClassMetadata;
 
-/**
- *
- * @author dvano
- */
+import java.util.Map;
+
+import static db_Tables.HibernateUtil.getSession;
+
 public final class Main {
 
     private Main() {
     }
-
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-//        try {
-//            MySQLConnector.registerDriver();
-//        } catch (ClassNotFoundException ex) {
-//            Logger.getLogger(SimpleProgram.class.getName()).log(Level.SEVERE, null, ex);
-//
-//            System.exit(1);
-//        }
 
-        EventQueue.invokeLater(() -> {
+        final Session session = getSession();
+        try {
+            System.out.println("querying all the managed entities...");
+            final Map metadataMap = session.getSessionFactory().getAllClassMetadata();
+            for (Object key : metadataMap.keySet()) {
+                final ClassMetadata classMetadata = (ClassMetadata) metadataMap.get(key);
+                final String entityName = classMetadata.getEntityName();
+                final Query query = session.createQuery("from " + entityName);
+                System.out.println("executing: " + query.getQueryString());
+                for (Object o : query.list()) {
+                    System.out.println("  " + o);
+                }
+            }
+        } finally {
+            session.close();
+        }
+
+
+        /*EventQueue.invokeLater(() -> {
+
+            MainFrameProgram frame = null;
             try {
-                MainFrameProgram frame = new MainFrameProgram();
+                frame = new MainFrameProgram();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setVisible(true);
-            } catch (SQLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedLookAndFeelException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (UnsupportedLookAndFeelException e) {
+                e.printStackTrace();
             }
-        });
+
+
+        });*/
     }
 }

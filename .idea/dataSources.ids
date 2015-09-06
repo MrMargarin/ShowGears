@@ -7,43 +7,55 @@
     </database-info>
     <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower"/>
     <schema name="" catalog="metgears_db"/>
-    <table name="subtabledrill" schema="" catalog="metgears_db" type="TABLE">
+    <table name="ord_prod_lst" schema="" catalog="metgears_db" type="TABLE">
       <column name="id" sqlType="MEDIUMINT UNSIGNED" precision="8" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
-      <column name="Code" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <column name="Name" sqlType="VARCHAR" precision="276" scale="0" nullable="true" jdbcType="12"/>
-      <column name="Название поставщика" sqlType="VARCHAR" precision="34" scale="0" nullable="true" jdbcType="12"/>
-      <column name="Цена (из прайса)" sqlType="VARCHAR" precision="7" scale="0" nullable="true" jdbcType="12"/>
-      <column name="Наличие (из прайс-листа)" sqlType="VARCHAR" precision="68" scale="0" nullable="true" jdbcType="12"/>
+      <column name="ord_id" sqlType="SMALLINT UNSIGNED" precision="5" scale="0" nullable="false" jdbcType="5"/>
+      <column name="stus_prod_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="quantity_req" sqlType="MEDIUMINT UNSIGNED" precision="8" scale="0" nullable="true" jdbcType="4"/>
       <primary-key name="PRIMARY" columns="id"/>
-      <foreign-key name="FK_subtabledrill_tabledrill" columns="Code" ref-table="tabledrill" ref-schema="" ref-catalog="metgears_db" ref-columns="Code" update-rule="3" delete-rule="3" deferrability="2"/>
-      <index name="FK_subtabledrill_tabledrill" unique="false" columns="Code"/>
+      <foreign-key name="FK_ord_prod_lst_global_tab" columns="stus_prod_id" ref-table="stus_tab" ref-schema="" ref-catalog="metgears_db" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="FK_ord_prod_lst_order" columns="ord_id" ref-table="order" ref-schema="" ref-catalog="metgears_db" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="id" unique="true" columns="id"/>
+      <index name="FK_ord_prod_lst_order" unique="false" columns="ord_id"/>
     </table>
-    <table name="subtabletapndie" schema="" catalog="metgears_db" type="TABLE">
-      <column name="id" sqlType="MEDIUMINT UNSIGNED" precision="8" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
-      <column name="Code" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <column name="Name" sqlType="VARCHAR" precision="2979" scale="0" nullable="true" jdbcType="12"/>
-      <column name="Название поставщика" sqlType="VARCHAR" precision="27" scale="0" nullable="true" jdbcType="12"/>
-      <column name="Цена (из прайса)" sqlType="VARCHAR" precision="8" scale="0" nullable="true" jdbcType="12"/>
-      <column name="Наличие (из прайс-листа)" sqlType="VARCHAR" precision="57" scale="0" nullable="true" jdbcType="12"/>
+    <table name="order" schema="" catalog="metgears_db" type="TABLE">
+      <column name="id" sqlType="SMALLINT UNSIGNED" precision="5" scale="0" nullable="false" jdbcType="5"/>
+      <column name="manager_name" sqlType="VARCHAR" precision="50" scale="0" nullable="false" jdbcType="12"/>
+      <column name="comment" sqlType="VARCHAR" precision="200" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="id"/>
-      <foreign-key name="FK_subtabletapndie_tabletapndie" columns="Code" ref-table="tabletapndie" ref-schema="" ref-catalog="metgears_db" ref-columns="Code" update-rule="3" delete-rule="3" deferrability="2"/>
-      <index name="FK_subtabletapndie_tabletapndie" unique="false" columns="Code"/>
+      <exported-key name="FK_ord_prod_lst_order" table="ord_prod_lst" schema="" catalog="metgears_db" columns="ord_id"/>
+      <index name="id" unique="true" columns="id"/>
     </table>
-    <table name="tabledrill" schema="" catalog="metgears_db" type="TABLE">
-      <column name="Code" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="Name" sqlType="VARCHAR" precision="121" scale="0" nullable="true" jdbcType="12"/>
-      <column name="CatName" sqlType="VARCHAR" precision="49" scale="0" nullable="true" jdbcType="12"/>
-      <primary-key name="PRIMARY" columns="Code"/>
-      <exported-key name="FK_subtabledrill_tabledrill" table="subtabledrill" schema="" catalog="metgears_db" columns="Code"/>
-      <index name="unique_Code" unique="true" columns="Code"/>
+    <table name="stipp_tab" schema="" catalog="metgears_db" type="TABLE">
+      <column name="id" sqlType="SMALLINT UNSIGNED" precision="5" scale="0" nullable="false" jdbcType="5" autoIncrement="true"/>
+      <column name="stus_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="vendor" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="prodName_ven" sqlType="VARCHAR" precision="276" scale="0" nullable="true" jdbcType="12"/>
+      <column name="price" sqlType="VARCHAR" precision="7" scale="0" nullable="true" jdbcType="12"/>
+      <column name="quantity_ven" sqlType="VARCHAR" precision="68" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="FK_sub_tab_global_tab" columns="stus_id" ref-table="stus_tab" ref-schema="" ref-catalog="metgears_db" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="FK_sub_tab_vendors" columns="vendor" ref-table="vendors" ref-schema="" ref-catalog="metgears_db" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="id" unique="true" columns="id"/>
+      <index name="FK_sub_tab_global_tab" unique="false" columns="stus_id"/>
+      <index name="FK_sub_tab_vendors" unique="false" columns="vendor"/>
     </table>
-    <table name="tabletapndie" schema="" catalog="metgears_db" type="TABLE">
-      <column name="Code" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="Name" sqlType="VARCHAR" precision="245" scale="0" nullable="true" jdbcType="12"/>
-      <column name="CatName" sqlType="VARCHAR" precision="215" scale="0" nullable="true" jdbcType="12"/>
-      <primary-key name="PRIMARY" columns="Code"/>
-      <exported-key name="FK_subtabletapndie_tabletapndie" table="subtabletapndie" schema="" catalog="metgears_db" columns="Code"/>
-      <index name="unique_Code" unique="true" columns="Code"/>
+    <table name="stus_tab" schema="" catalog="metgears_db" type="TABLE">
+      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="prodName" sqlType="VARCHAR" precision="121" scale="0" nullable="true" jdbcType="12"/>
+      <column name="catName" sqlType="VARCHAR" precision="49" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="FK_ord_prod_lst_global_tab" table="ord_prod_lst" schema="" catalog="metgears_db" columns="stus_prod_id"/>
+      <exported-key name="FK_sub_tab_global_tab" table="stipp_tab" schema="" catalog="metgears_db" columns="stus_id"/>
+      <index name="id" unique="true" columns="id"/>
+    </table>
+    <table name="vendors" schema="" catalog="metgears_db" type="TABLE">
+      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="real_name" sqlType="CHAR" precision="50" scale="0" nullable="true" jdbcType="1"/>
+      <column name="alter_name" sqlType="CHAR" precision="50" scale="0" nullable="true" jdbcType="1"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="FK_sub_tab_vendors" table="stipp_tab" schema="" catalog="metgears_db" columns="vendor"/>
+      <index name="id" unique="true" columns="id"/>
     </table>
   </data-source>
 </component>

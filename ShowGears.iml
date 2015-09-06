@@ -4,9 +4,14 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
+          <unit-entry name="a.xml" value="6f67ca39-d8b8-4ee3-a3d8-7ffd6783f378" />
+          <unit-entry name="db_Tables:config_files:conf_hiber.xml" value="6f67ca39-d8b8-4ee3-a3d8-7ffd6783f378" />
           <unit-entry name="hibernate.cfg.xml" value="6f67ca39-d8b8-4ee3-a3d8-7ffd6783f378" />
         </datasource-map>
-        <naming-strategy-map />
+        <naming-strategy-map>
+          <unit-entry name="db_Tables:config_files:hib_conf.xml" />
+        </naming-strategy-map>
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/db_Tables/config_files/hib_conf.xml" />
         <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/hibernate.cfg.xml" />
       </configuration>
     </facet>
@@ -18,7 +23,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="mysql-connector-java-5.1.36-bin" level="project" />
-    <orderEntry type="library" name="Hibernate 4.2.2-4.2.2" level="project" />
+    <orderEntry type="library" exported="" name="mysql-connector-java-5.1.36-bin" level="project" />
+    <orderEntry type="library" exported="" name="Hibernate 4.2.2-4.2.2" level="project" />
   </component>
 </module>
