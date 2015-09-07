@@ -6,56 +6,39 @@
       <identifier-quote-string>`</identifier-quote-string>
     </database-info>
     <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower"/>
-    <schema name="" catalog="metgears_db"/>
-    <table name="ord_prod_lst" schema="" catalog="metgears_db" type="TABLE">
-      <column name="id" sqlType="MEDIUMINT UNSIGNED" precision="8" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
-      <column name="ord_id" sqlType="SMALLINT UNSIGNED" precision="5" scale="0" nullable="false" jdbcType="5"/>
-      <column name="stus_prod_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="quantity_req" sqlType="MEDIUMINT UNSIGNED" precision="8" scale="0" nullable="true" jdbcType="4"/>
+    <schema name="" catalog="main_db"/>
+    <table name="order_table" schema="" catalog="main_db" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="managerName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="comment" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="id"/>
-      <foreign-key name="FK_ord_prod_lst_global_tab" columns="stus_prod_id" ref-table="stus_tab" ref-schema="" ref-catalog="metgears_db" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="FK_ord_prod_lst_order" columns="ord_id" ref-table="order" ref-schema="" ref-catalog="metgears_db" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <index name="id" unique="true" columns="id"/>
-      <index name="FK_ord_prod_lst_order" unique="false" columns="ord_id"/>
     </table>
-    <table name="order" schema="" catalog="metgears_db" type="TABLE">
-      <column name="id" sqlType="SMALLINT UNSIGNED" precision="5" scale="0" nullable="false" jdbcType="5"/>
-      <column name="manager_name" sqlType="VARCHAR" precision="50" scale="0" nullable="false" jdbcType="12"/>
-      <column name="comment" sqlType="VARCHAR" precision="200" scale="0" nullable="true" jdbcType="12"/>
+    <table name="orderlist_table" schema="" catalog="main_db" type="TABLE">
+      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="order_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="stus_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="quantity_req" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
       <primary-key name="PRIMARY" columns="id"/>
-      <exported-key name="FK_ord_prod_lst_order" table="ord_prod_lst" schema="" catalog="metgears_db" columns="ord_id"/>
-      <index name="id" unique="true" columns="id"/>
     </table>
-    <table name="stipp_tab" schema="" catalog="metgears_db" type="TABLE">
-      <column name="id" sqlType="SMALLINT UNSIGNED" precision="5" scale="0" nullable="false" jdbcType="5" autoIncrement="true"/>
-      <column name="stus_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="vendor" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="prodName_ven" sqlType="VARCHAR" precision="276" scale="0" nullable="true" jdbcType="12"/>
-      <column name="price" sqlType="VARCHAR" precision="7" scale="0" nullable="true" jdbcType="12"/>
-      <column name="quantity_ven" sqlType="VARCHAR" precision="68" scale="0" nullable="true" jdbcType="12"/>
-      <primary-key name="PRIMARY" columns="id"/>
-      <foreign-key name="FK_sub_tab_global_tab" columns="stus_id" ref-table="stus_tab" ref-schema="" ref-catalog="metgears_db" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="FK_sub_tab_vendors" columns="vendor" ref-table="vendors" ref-schema="" ref-catalog="metgears_db" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <index name="id" unique="true" columns="id"/>
-      <index name="FK_sub_tab_global_tab" unique="false" columns="stus_id"/>
-      <index name="FK_sub_tab_vendors" unique="false" columns="vendor"/>
+    <table name="stipp_table" schema="" catalog="main_db" type="TABLE">
+      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="stus_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="prodName_ven" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="venName" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="price_ven" sqlType="DOUBLE UNSIGNED" precision="22" scale="0" nullable="true" jdbcType="8"/>
+      <column name="quantity_ven" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
     </table>
-    <table name="stus_tab" schema="" catalog="metgears_db" type="TABLE">
-      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
-      <column name="prodName" sqlType="VARCHAR" precision="121" scale="0" nullable="true" jdbcType="12"/>
-      <column name="catName" sqlType="VARCHAR" precision="49" scale="0" nullable="true" jdbcType="12"/>
+    <table name="stus_table" schema="" catalog="main_db" type="TABLE">
+      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="prodName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="catName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="id"/>
-      <exported-key name="FK_ord_prod_lst_global_tab" table="ord_prod_lst" schema="" catalog="metgears_db" columns="stus_prod_id"/>
-      <exported-key name="FK_sub_tab_global_tab" table="stipp_tab" schema="" catalog="metgears_db" columns="stus_id"/>
-      <index name="id" unique="true" columns="id"/>
     </table>
-    <table name="vendors" schema="" catalog="metgears_db" type="TABLE">
-      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
-      <column name="real_name" sqlType="CHAR" precision="50" scale="0" nullable="true" jdbcType="1"/>
-      <column name="alter_name" sqlType="CHAR" precision="50" scale="0" nullable="true" jdbcType="1"/>
+    <table name="vendor" schema="" catalog="main_db" type="TABLE">
+      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="saleManagerName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="purchManagerName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="id"/>
-      <exported-key name="FK_sub_tab_vendors" table="stipp_tab" schema="" catalog="metgears_db" columns="vendor"/>
-      <index name="id" unique="true" columns="id"/>
     </table>
   </data-source>
 </component>
