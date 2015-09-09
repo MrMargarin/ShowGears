@@ -195,5 +195,7 @@ public class MainSQLTable {
     
     public int getNumOfItFnd()
     {return numOfItFound;}
+
+
 }
 

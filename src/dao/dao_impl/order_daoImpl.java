@@ -8,6 +8,7 @@ import tabs_gen.OrderlistTableEntity;
 import tabs_gen.StusTableEntity;
 ;import javax.swing.*;
 import java.sql.SQLException;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -108,8 +109,9 @@ public class order_daoImpl implements order_dao {
     }
 
     @Override
-    public Collection getOrdProds()
-    {
-        return
+    public Collection getOrdLsts() throws SQLException {
+        return null;
     }
+
+
 }

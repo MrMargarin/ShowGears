@@ -10,7 +10,7 @@ import mai_n.MySQLConnector;
 
 
 public class SubSQLTable {
-    private final String searchField = "Code"; //Имя поля по которому производится поиск товара(первичный ключ)
+    private final String searchField = "stus_id"; //Имя поля по которому производится поиск товара(первичный ключ)
     private DefaultTableModel subTable;
     private MySQLConnector con;
     private Vector<String> colNames;
@@ -24,7 +24,7 @@ public class SubSQLTable {
     
     public void fillTable(String codeFieldName, String catTableName) throws SQLException
     {
-        String sqls = "select * from sub"+catTableName+" where "+searchField+" like \'"+codeFieldName+"\'";
+        String sqls = "select * from "+catTableName+" where "+searchField+" like \'"+codeFieldName+"\'";
         ResultSet rs = con.getResultSet(sqls);
         ResultSetMetaData data = rs.getMetaData();
         //==================================read-col-names======================
