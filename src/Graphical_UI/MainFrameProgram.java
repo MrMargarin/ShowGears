@@ -20,46 +20,44 @@ import table_models.*;
 
 public class MainFrameProgram extends JFrame {
 
+    private long start, stop, resulttime;
     private final String namField = "prodName"; //название поля наименований товаров, по которому проводится поиск
     
     private MainSQLTable mainTableMod;
     private SubSQLTable subTableMod;
-    private OrderTable orderTabMod;
+    private OrderTable orderTabMod;     //модели таблиц
     
     private ArrayList<JLabel> Colums;
     private JPanel workPanel; //панель с кнопками и поиском
     private JPanel atrzPanel; //панель для подключения к БД
     private JPanel filtPan;
-    private JTable STUSTable, STIPPTable, OrderTable;
-    
-    private ArrayList<JTable> prov;
-    private JTabbedPane tabs;
-    private JTextField url;
-    private JTextField user;
-    private JPasswordField password;
-    private JTextField sql, search;
-    private JComboBox Categories, Kategorii;
-    private String srch;
-    private MySQLConnector connector;
-    private JButton connect, show, discon, mkOder;
-    private JLabel pass, login;
-    private JSplitPane stus_stipp_pane;
-    private JPanel inputPane, outputPane;
-    private JScrollPane scPfSTUSTable, scPfSTIPPTable, scPfORDERTable; //   "scPf" - scroll panel for
-    
-    private ParamList cats;
-    //private String urlToDB = "jdbc:mysql://192.168.1.158/metlgears_db";
+    private JTable STUSTable, STIPPTable, OrderTable; //Таблицы
+
     private String urlToDB = "jdbc:mysql://localhost/main_db";
-    //private String[] tables = {"drill", "tapndie", "another" }; //difrent tables
-    private String[] tables = {"tabledrill", "tabletapndie", "another" }; //difrent tables
-    private JButton showt;
-    private String userName;
-    private JPanel ordPane;
-    private TableColumn addColumn;
-    
+    private String userName; //current user
+    private JLabel pass, login;
+    private JTextField user;
+    private JPasswordField password; //authorization
+
+    private JTextField search;
+    private String srch;
+
+    private JComboBox Categories, Kategorii;
+    private ParamList cats;     //one of parameters of products
+
+    private JButton connect, show, discon, mkOder;
+
+    private JSplitPane stus_stipp_pane;
+    private JPanel inputPane, outputPane, ordPane; // panel for make orders;
+    private JScrollPane scPfSTUSTable, scPfSTIPPTable, scPfORDERTable; //   "scPf" - scroll panel for
+
+
+
+    private MySQLConnector connector;
+
     public MainFrameProgram() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        Categories = new JComboBox(tables); //
+
 
         orderTabMod = null;
 
@@ -72,14 +70,11 @@ public class MainFrameProgram extends JFrame {
 
 
         ordPane = new JPanel(new BorderLayout());
-        tabs = new JTabbedPane();
-        //mPane = new JPanel(new GridLayout(1,2));
-        //stus_stipp_pane = new JPanel();
-        //stus_stipp_pane.setLayout(new BoxLayout(stus_stipp_pane, BoxLayout.Y_AXIS));
+
         stus_stipp_pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true);
-        //stus_stipp_pane.setDividerLocation(0.6);
+
         search = new JTextField("72", 10); //-----------------search field
-        //table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
                 
                
         this.setTitle("MetallGearsViewer");
@@ -91,8 +86,7 @@ public class MainFrameProgram extends JFrame {
         @Override
         public void windowClosing(WindowEvent e) {
             try {
-                //connector.disconnect();
-                mainTableMod.closeConec();
+                if (connector!=null) connector.disconnect();
                 } catch (SQLException ex) {
                       Logger.getLogger(MainFrameProgram.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -108,110 +102,72 @@ public class MainFrameProgram extends JFrame {
 //===================================="Connect"=================================
         connect = new JButton("Connect");
         connect.addActionListener((ActionEvent e) -> {
+            start = System.nanoTime();
             try {
-                try{
-                connector = new MySQLConnector(urlToDB, user.getText(), password.getText());}
-                catch(SQLException ex)
-                {JOptionPane.showMessageDialog(this, "ex.getMessage()", "Ошибка авторизации", WIDTH);
-
+                try {
+                    connector = new MySQLConnector(urlToDB, user.getText(), password.getText());
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "ex.getMessage()", "Ошибка авторизации", WIDTH);
                 }
-                userName = user.getText();
+
+                userName = user.getText(); //init user current name
                 mainTableMod = new MainSQLTable(connector);
                 subTableMod = new SubSQLTable(connector);
                 orderTabMod = new OrderTable(connector, userName);
 
                 atrzPanel.setVisible(false);
                 workPanel.setVisible(true);
-                search.requestFocus();
-                
-                //inputPane.remove(atrzPanel);
-                //inputPane.add(workPanel);
-                
-                //cats = new ParamList("CatName", Categories.getSelectedItem().toString(), connector);
+                search.requestFocus(); //focus search field
+
+
                 cats = new ParamList("CatName", "stus_table", connector);
                 Kategorii = new JComboBox(cats.getValues());
-                workPanel.add(Kategorii);
+                workPanel.add(Kategorii);                           //there is categories initialization
+
                 inputPane.revalidate();
-                
-                
+
+                stop = System.nanoTime();
+                resulttime = stop - start;
+                System.out.println("connection is "+resulttime);
+
             } catch (ClassNotFoundException | SQLException ex) {
                 Logger.getLogger(MainFrameProgram.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
-        //mkoder = new JButton("Oder");
-        //mkoder.addActionListener((ActionEvent e) -> {
-        //
-        //    OrderTable = new JTable
-        //    
-        //    
-        //});
+
+
 //====================================="Show"===================================
         show = new JButton("Search");
-        //show.setIcon(new ImageIcon("images\\search_icon.png"));
-        
-        show.addActionListener((ActionEvent e) -> {        
-            
-        try {
-            
-            //if(stus_stipp_pane.isAncestorOf(scPfSTUSTable)){stus_stipp_pane.remove(scPfSTUSTable);}
+        show.addActionListener((ActionEvent e) -> {
+        try {start = System.nanoTime();
             if(stus_stipp_pane.isAncestorOf(scPfSTIPPTable)){
                 stus_stipp_pane.remove(scPfSTIPPTable);}
-            //================Поле поиска===============================
-            System.out.print("Search field is: ");
-            //srch = "select * from " + Categories.getSelectedItem() + " where Name like \'%" + search.getText() + "%\'";
-            //srch = "select * from " + Categories.getSelectedItem() + " where "+namField+" like \'%" + search.getText() + "%\' and CatName like \'"+Kategorii.getSelectedItem()+"\'";
+            //================Поисковик=================================
             srch = "select * from stus_table where "+namField+" like \'%" + search.getText() + "%\' and CatName like \'"+Kategorii.getSelectedItem()+"\'";
-            System.out.println("global search"+srch);
-            //==========================================================
-            
             mainTableMod.fillTable(srch);
             if(mainTableMod.getNumOfItFnd()==0) JOptionPane.showMessageDialog(this, "По заданным параметрам не найдено ни одного товара.", "Нету!", WIDTH);
             STUSTable = new JTable(mainTableMod.getMainTab()){
                 @Override
                 public boolean isCellEditable(int arg0, int arg1){return false;}};
+            //==========================================================
+
             //================Установка Сортировщика====================
             TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(mainTableMod.getMainTab());
             STUSTable.setRowSorter(sorter1);
-            
             //================Установка Ширины Колонок==================
             STUSTable.getColumnModel().getColumn(0).setPreferredWidth(30);
             STUSTable.getColumnModel().getColumn(1).setPreferredWidth(200);
             STUSTable.getColumnModel().getColumn(2).setPreferredWidth(150);
             scPfSTUSTable = new JScrollPane(STUSTable);
-            
-            //==========================Table-subTable======================================
 
+            //==========================Table-Order-add_new_product=======================
             STUSTable.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent me) {
                     JTable table =(JTable) me.getSource();
                     Point p = me.getPoint();
                     int row = table.rowAtPoint(p);
                     TableModel model = STUSTable.getModel();
-                    if (me.getClickCount() == 1) {
-                        try{
-
-                                    Object value = model.getValueAt(row, 0);
-                                    //subTableMod.fillTable(value.toString(), Categories.getSelectedItem().toString());
-                                    subTableMod.fillTable(value.toString(), "stipp_table");
-                                    TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(subTableMod.getSubTab());
-                                    STIPPTable = new JTable(subTableMod.getSubTab());
-                                    STIPPTable.setRowSorter(sorter2);
-                                    STIPPTable.setFillsViewportHeight(true);
-                                    scPfSTIPPTable = new JScrollPane(STIPPTable);
-                                    stus_stipp_pane.setBottomComponent(scPfSTIPPTable);
-
-                                double divider =(double) STUSTable.getRowCount()/((double) STUSTable.getRowCount()+(double) STIPPTable.getRowCount());
-                                stus_stipp_pane.setDividerLocation(0.5);
-                                stus_stipp_pane.revalidate();
-
-                            } catch (SQLException ex) {
-
-                                Logger.getLogger(MainFrameProgram.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-
-                    else if (me.getClickCount() == 2) {
+                    if (me.getClickCount() == 2) {
                            if(OrderTable!=null)
                            {
                                Vector ordProd = new Vector();
@@ -219,15 +175,14 @@ public class MainFrameProgram extends JFrame {
                                ordProd.add(model.getValueAt(row, 1));
                                ordProd.add(model.getValueAt(row, 2));
                                ordProd.add(new Integer(0));
-                               ordProd.add("Жмак!");
+                               ordProd.add("Удалить");
                                orderTabMod.addRow(ordProd);
                            }
                     }
                 }
             });
-
-            /*ListSelectionModel selModel = STUSTable.getSelectionModel();
-
+            //==========================Table-STIPP======================================
+            ListSelectionModel selModel = STUSTable.getSelectionModel();
             selModel.addListSelectionListener(new ListSelectionListener() {
                 @Override
                 public void valueChanged(ListSelectionEvent e) {
@@ -258,16 +213,17 @@ public class MainFrameProgram extends JFrame {
                         Logger.getLogger(MainFrameProgram.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }); */
+            });
             
             stus_stipp_pane.setTopComponent(scPfSTUSTable); //панель с таблицей результатов товаров
-            //scPfSTUSTable.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-            //stus_stipp_pane.setDividerLocation(0.7);
             stus_stipp_pane.validate();
-            
+
+            stop = System.nanoTime();
+            resulttime = stop - start;
+            System.out.println("show is " + resulttime);
+
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", WIDTH);
-            //Logger.getLogger(SimpleFrame.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "IN THE CONNECTION"+ex.getMessage(), "Error", WIDTH);
         }
             
     });
@@ -278,17 +234,16 @@ public class MainFrameProgram extends JFrame {
             else try {
                 stus_stipp_pane.removeAll();
                 stus_stipp_pane.revalidate();
-                mainTableMod.closeConec();
-                subTableMod.closeConec();
-                
+                //mainTableMod.closeConec();
+                //subTableMod.closeConec();
+                connector.disconnect();
                 atrzPanel.setVisible(true);
                 workPanel.setVisible(false);
-                //inputPane.add(atrzPanel);
-                //inputPane.remove(workPanel);
+
                 inputPane.revalidate();
             } 
             catch (SQLException ex) {
-                Logger.getLogger(MainFrameProgram.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "IN THE DISCONNECTION"+ex.getMessage(), "Error", WIDTH);
             }
         });
 
@@ -296,19 +251,14 @@ public class MainFrameProgram extends JFrame {
 
         mkOder = new JButton("Заказ");
         mkOder.addActionListener((ActionEvent e) -> {
-            if(ordPane.getComponentCount()!=0)
-            {   JOptionPane.showMessageDialog(this, "Завершите, уже существующий заказ.", "Заказ не завершен!", WIDTH);
-
-            }
-
-            else
-            {
-
-
-
-                ordPane.add(new JLabel("Менеджер: "+userName), BorderLayout.NORTH);
-
+            if (ordPane.getComponentCount() != 0)
+                JOptionPane.showMessageDialog(this, "Завершите, уже существующий заказ.", "Заказ не завершен!", WIDTH);
+            else {
+                ordPane.add(new JLabel("Менеджер: " + userName), BorderLayout.NORTH);
                 OrderTable = new JTable(orderTabMod);
+                OrderTable.getColumn("Удалить").setCellRenderer(new ButtonRenderer());
+                OrderTable.getColumn("Удалить").setCellEditor(
+                        new ButtonEditor(new JCheckBox()));
                 scPfORDERTable = new JScrollPane(OrderTable);
                 ordPane.add(scPfORDERTable, BorderLayout.CENTER);
 
@@ -318,7 +268,7 @@ public class MainFrameProgram extends JFrame {
                     orderTabMod.setComment(commentTextField.getText());
                     orderTabMod.exportTable();
                     ordPane.removeAll();
-                    stus_stipp_pane.revalidate();
+                    ordPane.revalidate();
                 });
                 JPanel intputOrderPane = new JPanel();
                 intputOrderPane.add(commentTextField, BorderLayout.SOUTH);
@@ -328,28 +278,13 @@ public class MainFrameProgram extends JFrame {
             }
         });
 
-        /*Categories.addActionListener (new ActionListener () {
-        public void actionPerformed(ActionEvent e) {
-            try {
-                if(workPanel.isAncestorOf(Kategorii)) workPanel.remove(Kategorii);
-                cats = new ParamList("CatName", Categories.getSelectedItem().toString(), connector);
-                Kategorii = new JComboBox(cats.getValues());
-                workPanel.add(Kategorii);
-                inputPane.revalidate();
-            } catch (SQLException ex) {
-                Logger.getLogger(MainFrameProgram.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            }
-        });*/
-        
-        
         atrzPanel.add(login);
         atrzPanel.add(user);
         atrzPanel.add(pass);
         atrzPanel.add(password);
         atrzPanel.add(connect);
         
-        workPanel.add(Categories);
+
         workPanel.add(new JLabel("Найти:"));
         workPanel.add(search);
         workPanel.add(show);
@@ -360,6 +295,7 @@ public class MainFrameProgram extends JFrame {
         inputPane.add(workPanel);
         atrzPanel.setVisible(true);
         workPanel.setVisible(false);
+        //KEYS_BINDS
         KeyAdapter keyLforConn = new KeyAdapter() {
            @Override
             public void keyReleased(java.awt.event.KeyEvent ke) {
@@ -377,9 +313,7 @@ public class MainFrameProgram extends JFrame {
         password.addKeyListener(keyLforConn);
         user.addKeyListener(keyLforConn);
         search.addKeyListener(keyLforShow);
-        //inputPane.add(atrzPanel);
-        //inputPane.validate();
-        //Image img = new ImageIcon("C:\\Users\\rtert\\Documents\\NetBeansProjects\\JavaApplication1\\images\\Mini_logo.png").getImage();
+        //===================================set icon=======================
         Image img = new ImageIcon("images\\Mini_logo.png").getImage();
         this.setIconImage(img);
         this.getContentPane().add(inputPane, BorderLayout.SOUTH);
@@ -388,10 +322,6 @@ public class MainFrameProgram extends JFrame {
         this.getContentPane().add(stus_stipp_pane, BorderLayout.CENTER);
     }
 
-    private void add_column_constructor()
-    {
-        addColumn = new TableColumn(1,30 , new ButtonRenderer(), new ButtonEditor(new JCheckBox()));
-    }
 
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
