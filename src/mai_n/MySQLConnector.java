@@ -1,5 +1,6 @@
 package mai_n;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -61,13 +62,13 @@ public final class MySQLConnector {
         return rs;
     }
     
-    public void execSQL(String sql)
-    {
-        try {
+    public void execSQL(String sql) throws SQLException {
+        //try {
             this.statement.executeUpdate(sql);
-        } catch (SQLException ex) {
-            System.out.println("Adding new object is fault: " + ex.getMessage());
-        }
+        //} catch (SQLException ex) {
+            //JOptionPane.showMessageDialog(null, "Недостаточно прав у вашего пользоателя", ex.getMessage(), JOptionPane.INFORMATION_MESSAGE);
+            //System.out.println("Adding new object is fault: " + ex.getMessage());
+
     }
     
     public ResultSet getResultSet() {

@@ -1,6 +1,6 @@
 package classes;
 
-import table_models.MainSQLTable;
+import table_models.STUS_Table;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +13,7 @@ public class MainWindow {
     public final String TAB_NAME = "_sverla_";
     
     private JPanel main_win;
-    private MainSQLTable tab;
+    private STUS_Table tab;
     private ArrayList<JLabel> Colums;
     private JPanel panel;
     private JPanel filtPan;

@@ -1,6 +1,7 @@
 package mai_n;
 
-import Graphical_UI.MainFrameProgram;
+import Graphical_UI.Graphic_main;
+import Graphical_UI.MainFrameProgram2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,9 +27,11 @@ public final class Main___ {
     public static void main(String[] args) throws FileNotFoundException, IOException, SQLException {
        EventQueue.invokeLater(() -> {
 
-           MainFrameProgram frame = null;
+           //MainFrameProgram2 frame = null;
+           //Graphic_main frame = null;
            try {
-               frame = new MainFrameProgram();
+               Graphic_main frame = new Graphic_main();
+               //MainFrameProgram2 frame = new MainFrameProgram2();
                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                frame.setVisible(true);
            } catch (SQLException e) {
