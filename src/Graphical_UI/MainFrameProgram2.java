@@ -24,7 +24,7 @@ public class MainFrameProgram2 extends JFrame {
     
     private STUS_Table mainTableMod;
     private STIPP_Table subTableMod;
-    private OrderTable orderTabMod;     //модели таблиц
+    private ProdOrderTable orderTabMod;     //модели таблиц
 
     private String urlToDB = "jdbc:mysql://localhost/main_db";
     private String userName; //current user
@@ -58,7 +58,7 @@ public class MainFrameProgram2 extends JFrame {
     public MainFrameProgram2() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-        String ffddsawf = "Привет";
+
         orderTabMod = null;
 
 
@@ -112,7 +112,7 @@ public class MainFrameProgram2 extends JFrame {
                 userName = user.getText(); //init user current name
                 mainTableMod = new STUS_Table(connector);
                 subTableMod = new STIPP_Table(connector);
-                //orderTabMod = new OrderTable(connector, userName);
+                //orderTabMod = new ProdOrderTable(connector, userName);
 
                 atrzPanel.setVisible(false);
                 workPanel.setVisible(true);
@@ -251,7 +251,7 @@ public class MainFrameProgram2 extends JFrame {
             if (ordPane.getComponentCount() != 0)
                 JOptionPane.showMessageDialog(this, "Завершите, уже существующий заказ.", "Заказ не завершен!", WIDTH);
             else {
-                orderTabMod = new OrderTable(connector, userName);
+                orderTabMod = new ProdOrderTable(connector, userName);
                 ordPane.add(new JLabel("Менеджер: " + userName + "                  Номер заказа: " + orderTabMod.getOrderNumber()), BorderLayout.NORTH);
 
                 OrderTable = new JTable(orderTabMod);

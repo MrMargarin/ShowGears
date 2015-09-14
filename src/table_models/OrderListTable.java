@@ -13,15 +13,17 @@ import java.util.Vector;
  */
 public class OrderListTable extends DefaultTableModel{
 
-    private static final String[] colNames = {"Номер", "Комментарий", "Менеджер"};
+    private static final String[] colNames = {"РќРѕРјРµСЂ", "РљРѕРјРјРµРЅС‚Р°СЂРёР№", "РњРµРЅРµРґР¶РµСЂ"};
     private static final String tableName = "order_table";
-
-
     private MySQLConnector con;
 
     public OrderListTable(MySQLConnector con) throws SQLException {
         super((Object[][]) null, null);
         this.con = con;
+
+    }
+
+    public void fillTable() throws SQLException {
         String sqls = "select * from "+tableName;
         ResultSet rs = con.getResultSet(sqls);
         ResultSetMetaData data = rs.getMetaData();

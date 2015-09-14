@@ -11,7 +11,7 @@ import mai_n.MySQLConnector;
 
 
 
-public class OrderTable extends DefaultTableModel{
+public class ProdOrderTable extends DefaultTableModel{
     private static final String[] colNames = {"Код товара", "Наименование", "Категория", "Количество", "Удалить"};
     private static final String[] colNamesWrem = {"Код товара", "Наименование", "Категория", "Количество"};
     private final String orderProdsNameTable = "orderlist_table";
@@ -27,7 +27,13 @@ public class OrderTable extends DefaultTableModel{
     private int orderRowCount;
     private int orderNumber;
 
-    public OrderTable(MySQLConnector con, int orderCode) throws SQLException {
+    public ProdOrderTable(MySQLConnector con)
+    {
+        super((Object[][]) null, null);
+        this.con = con;
+    }
+
+    public ProdOrderTable(MySQLConnector con, int orderCode) throws SQLException { //конструктор для ....
         super((Object[][]) null, null);
         this.con = con;
         String sql = "SELECT stus_table.id, stus_table.prodName, stus_table.catName, orderlist_table.quantity_req " +
@@ -52,7 +58,7 @@ public class OrderTable extends DefaultTableModel{
 
     }
 
-    public OrderTable(MySQLConnector con, String managerName) {
+    public ProdOrderTable(MySQLConnector con, String managerName) { //конструктор для заполнения заказа _SM
         super(null, colNames);
         this.con = con;
         this.managerName = managerName;
@@ -70,14 +76,36 @@ public class OrderTable extends DefaultTableModel{
         orderNumber = orderRowCount+1;
 
     }
-    
+
+    public void fillTable(int orderCode) throws SQLException {   //table for PM, like SM's STUS  _PM
+
+        String sql = "SELECT stus_table.id, stus_table.prodName, stus_table.catName, orderlist_table.quantity_req " +
+                "FROM orderlist_table " +
+                "INNER JOIN stus_table ON stus_table.id = orderlist_table.stus_id where orderlist_table.order_id like '"+orderCode+"'";
+        ResultSet rs = this.con.getResultSet(sql);
+        ResultSetMetaData data = rs.getMetaData();
+
+        Vector<Vector<Object>> values = new Vector<>();
+        int maxColumns = data.getColumnCount();
+
+        while (rs.next()) {
+            Vector<Object> value = new Vector<>();
+            for (int i = 1; i <= maxColumns; i++)
+                value.add(con.getResultSet().getObject(i));
+            values.add(value);
+        }
+
+        final Vector<String> colNamesVec = new Vector<>(); colNamesVec.add(colNames[0]); colNamesVec.add(colNames[1]); colNamesVec.add(colNames[2]); colNamesVec.add(colNames[3]);
+        this.setDataVector(values, colNamesVec);
+    }
+
     public int getOrderRowCount() {return orderRowCount;}
 
     public int getOrderNumber() {return orderNumber;}
     
     public void exportTable()
     {
-        System.out.println("I am in OrderTable.exportTable.");
+        System.out.println("I am in ProdOrderTable.exportTable.");
 
         String sql ="insert into "+orderTable+
                 //+ orderNumber+

@@ -1,10 +1,7 @@
 package dao.dao_interface;
 
-import table_models.OrderTable;
 import tabs_gen.OrderTableEntity;
 import tabs_gen.OrderlistTableEntity;
-import tabs_gen.StippTableEntity;
-import tabs_gen.StusTableEntity;
 
 import java.sql.SQLException;
 import java.util.Collection;

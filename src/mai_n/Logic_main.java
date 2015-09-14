@@ -1,9 +1,9 @@
 package mai_n;
 
 
+import table_models.ProdOrderTable;
 import table_models.STUS_Table;
 import table_models.OrderListTable;
-import table_models.OrderTable;
 import table_models.STIPP_Table;
 
 import java.sql.SQLException;
@@ -17,7 +17,7 @@ public class Logic_main {
 
     private STUS_Table mainTableMod;
     private STIPP_Table subTableMod;
-    private OrderTable orderTabMod;     //������ ������
+    private ProdOrderTable orderTabMod;     //������ ������
     private OrderListTable orderListTabMod;
 
 
@@ -39,8 +39,14 @@ public class Logic_main {
 
             setMainTableMod(new STUS_Table(getConnector()));
             setSubTableMod(new STIPP_Table(getConnector()));
-            //orderTabMod = new OrderTable(connector, userName);
+            //orderTabMod = new ProdOrderTable(connector, userName);
             setCats(new ParamList(paramName, paramTableName, this.connector));
+    }
+
+    public void build_Order_Tables() throws SQLException {
+        setOrderListTabMod(new OrderListTable(getConnector()));
+        setOrderTabMod(new ProdOrderTable(getConnector()));
+
     }
 
 
@@ -65,11 +71,11 @@ public class Logic_main {
         this.subTableMod = subTableMod;
     }
 
-    public OrderTable getOrderTabMod() {
+    public ProdOrderTable getOrderTabMod() {
         return orderTabMod;
     }
 
-    public void setOrderTabMod(OrderTable orderTabMod) {
+    public void setOrderTabMod(ProdOrderTable orderTabMod) {
         this.orderTabMod = orderTabMod;
     }
 
@@ -97,6 +103,7 @@ public class Logic_main {
         connector.disconnect();
     }
 
+
     public void mkSTUSsearch(String search, Object categ) throws SQLException {
         srch = "select * from stus_table where "+namField+" like \'%" + search + "%\' and CatName like \'"+categ+"\'";
         mainTableMod.fillTable(srch);
@@ -109,6 +116,21 @@ public class Logic_main {
 
     public void mkOrderTable()
     {
-        orderTabMod = new OrderTable(connector, userName);
+        orderTabMod = new ProdOrderTable(connector, userName);
+    }
+
+    public void mkProdOrderTable(int code) throws SQLException {
+        orderTabMod.fillTable(code);
+    }
+
+
+    public void mkOrderListTable() throws SQLException { orderListTabMod.fillTable(); }
+
+    public OrderListTable getOrderListTabMod() {
+        return orderListTabMod;
+    }
+
+    public void setOrderListTabMod(OrderListTable orderListTabMod) {
+        this.orderListTabMod = orderListTabMod;
     }
 }
