@@ -121,7 +121,6 @@ public class ProdOrderTable extends DefaultTableModel{
         try {
         for(int i = 0; i < this.getRowCount(); i++)
         {
-            //exportOrderedProduct((Integer) this.getValueAt(i, 0), (Integer) this.getValueAt(i, 3));
             exportOrderedProduct(this.getValueAt(i, 0), this.getValueAt(i, 3));
         }
         } catch (SQLException e) {

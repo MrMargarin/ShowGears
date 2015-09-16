@@ -20,8 +20,11 @@ public class Logic_main {
     private ProdOrderTable orderTabMod;     //������ ������
     private OrderListTable orderListTabMod;
 
+    private User user;
+
 
     private String userName; //current user
+
     private String srch; //searcging query
 
     private ParamList cats;     //one of parameters of products
@@ -29,10 +32,10 @@ public class Logic_main {
     private MySQLConnector connector;
 
 
-    public Logic_main(String usm, String pss) throws SQLException, ClassNotFoundException {
+    public Logic_main(String usm, String pss) throws SQLException, ClassNotFoundException, MyException {
         setConnector(new MySQLConnector(urlToDB, usm, pss));
         setUserName(usm); //init user current name
-
+        setUser(new User(usm, this.connector));
     }
 
     public void build_STUSnSTIPP() throws SQLException {
@@ -132,5 +135,15 @@ public class Logic_main {
 
     public void setOrderListTabMod(OrderListTable orderListTabMod) {
         this.orderListTabMod = orderListTabMod;
+    }
+
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -5,4 +5,9 @@ package mai_n;
  */
 public class MyException extends Exception {
 
+
+    MyException()
+    {
+
+    }
 }

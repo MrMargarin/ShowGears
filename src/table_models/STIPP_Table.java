@@ -36,7 +36,7 @@ public class STIPP_Table {
         //==================================read-data===========================
         while (rs.next()) {
             Vector<Object> value = new Vector<>();
-            for (int i = 1; i <= maxColumns; i++) 
+            for (int i = 2; i <= maxColumns; i++)
                 value.add(con.getResultSet().getObject(i));
             values.add(value);
         }
