@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +29,7 @@ public class Graphic_main extends JFrame{
     private JTextField user;
     private JPasswordField password; //authorization
     private JTextField search;
-    private JComboBox Kategorii;
+    private ArrayList<JComboBox> Kategorii;
     private JButton connect, show, discon, mkOder, showOrders;
 
     private KeyAdapter keyLforConn, keyLforShow;
@@ -51,7 +52,7 @@ public class Graphic_main extends JFrame{
                 try {
                     if (mainThread != null) mainThread.disconnect();
                 } catch (SQLException ex) {
-                    Logger.getLogger(MainFrameProgram2.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Graphic_main.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -64,7 +65,7 @@ public class Graphic_main extends JFrame{
         workPanel = new JPanel();
         sidePane = new JPanel(new BorderLayout());
 
-        Kategorii = new JComboBox();
+        Kategorii = new ArrayList<JComboBox>();
 
         search = new JTextField("72", 10); //-----------------search field
         login = new JLabel("Login");
@@ -268,10 +269,16 @@ public class Graphic_main extends JFrame{
 
         if(mainThread.getUser().getType()==1) //sale
         {
-            Kategorii = new JComboBox(mainThread.getCats().getValues());
+            Vector<Vector> vecOFCats = mainThread.getParList().getParamsVector();
+            for(int ind = 0; ind < vecOFCats.size(); ind++)
+            Kategorii.add(new JComboBox(vecOFCats.get(ind)));
+
+
             workPanel.add(new JLabel("Найти:"));
             workPanel.add(search);
-            workPanel.add(Kategorii);
+            for(int d=0; d<Kategorii.size(); d++){
+            workPanel.add(Kategorii.get(d));}
+
             workPanel.add(show);
             workPanel.add(discon);
             workPanel.add(mkOder);
@@ -299,7 +306,14 @@ public class Graphic_main extends JFrame{
             if(stus_stipp_pane.isAncestorOf(scPfSTIPPTable)){ stus_stipp_pane.remove(scPfSTIPPTable); }
             //================Поисковик=================================
 
-            mainThread.mkSTUSsearch(search.getText(), Kategorii.getSelectedItem());
+            String catFull = "";
+            for(int i =0; i<Kategorii.size(); i++) catFull+=Kategorii.get(i).getSelectedItem().toString() + "/";
+
+            StringBuilder cFull = new StringBuilder(catFull);
+            cFull.deleteCharAt(cFull.length()-1);
+
+            mainThread.mkSTUSsearch(search.getText(), cFull.toString());
+
             if(mainThread.getMainTableMod().getNumOfItFnd()==0) JOptionPane.showMessageDialog(this, "По заданным параметрам не найдено ни одного товара.", "X", WIDTH);
 
             STUSTable = new JTable(mainThread.getMainTableMod().getMainTab()){
@@ -365,7 +379,7 @@ public class Graphic_main extends JFrame{
 
                     } catch (SQLException ex) {
 
-                        Logger.getLogger(MainFrameProgram2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Graphic_main.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             });
@@ -501,6 +515,8 @@ public class Graphic_main extends JFrame{
             scPfPrOrdTable = new JScrollPane(ProdOrdTable);
             sidePane.add(scPfPrOrdTable, BorderLayout.CENTER);
             JTextField commentTextField = new JTextField("Комментарий...", 30);
+
+
 
             JButton sendOrder = new JButton("Отправить");
             sendOrder.addActionListener((ActionEvent ev) -> {

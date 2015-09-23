@@ -31,6 +31,7 @@ public class Logic_main {
 
     private MySQLConnector connector;
 
+    private ParamList parList;
 
     public Logic_main(String usm, String pss) throws SQLException, ClassNotFoundException, MyException {
         setConnector(new MySQLConnector(urlToDB, usm, pss));
@@ -43,7 +44,9 @@ public class Logic_main {
             setMainTableMod(new STUS_Table(getConnector()));
             setSubTableMod(new STIPP_Table(getConnector()));
             //orderTabMod = new ProdOrderTable(connector, userName);
-            setCats(new ParamList(paramName, paramTableName, this.connector));
+            setParList(new ParamList(paramName, paramTableName, this.connector));
+            getParList().ParamListSeparate();
+            setCats(getParList());
     }
 
     public void build_Order_Tables() throws SQLException {
@@ -108,13 +111,15 @@ public class Logic_main {
 
 
     public void mkSTUSsearch(String search, Object categ) throws SQLException {
+
+
         srch = "select * from stus_table where "+namField+" like \'%" + search + "%\' and CatName like \'"+categ+"\'";
         mainTableMod.fillTable(srch);
     }
 
     public void mkSTIPP(String productCode) throws SQLException {
-        subTableMod.fillTable(productCode, "stipp_table");
 
+        subTableMod.fillTable(productCode, user.getType());
     }
 
     public void mkOrderTable()
@@ -145,5 +150,13 @@ public class Logic_main {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public ParamList getParList() {
+        return parList;
+    }
+
+    public void setParList(ParamList parList) {
+        this.parList = parList;
     }
 }

@@ -1,7 +1,6 @@
 package mai_n;
 
 import Graphical_UI.Graphic_main;
-import Graphical_UI.MainFrameProgram2;
 
 import javax.swing.*;
 import java.awt.*;

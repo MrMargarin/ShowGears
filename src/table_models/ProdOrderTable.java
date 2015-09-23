@@ -113,6 +113,7 @@ public class ProdOrderTable extends DefaultTableModel{
                 "', '"       + managerName+
                 "');";
 
+
         try {
             con.execSQL(sql); //insert order
         } catch (SQLException e) {

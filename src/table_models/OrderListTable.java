@@ -13,8 +13,9 @@ import java.util.Vector;
  */
 public class OrderListTable extends DefaultTableModel{
 
-    private static final String[] colNames = {"Номер", "Комментарий", "Менеджер"};
+    private static final String[] colNames = {"Номер", "Комментарий", "Фамилия", "Имя"};
     private static final String tableName = "order_table";
+    private static final String usersTable = "users";
     private MySQLConnector con;
 
     public OrderListTable(MySQLConnector con) throws SQLException {
@@ -24,7 +25,11 @@ public class OrderListTable extends DefaultTableModel{
     }
 
     public void fillTable() throws SQLException {
-        String sqls = "select * from "+tableName;
+        //String sqls = "select * from "+tableName;
+
+
+        String sqls = "select order_table.id, order_table.`comment`, users.Surname, users.Name from "+tableName+", "+usersTable+" where managerName like login";
+
         ResultSet rs = con.getResultSet(sqls);
         ResultSetMetaData data = rs.getMetaData();
         //==================================read-col-names======================
@@ -41,7 +46,7 @@ public class OrderListTable extends DefaultTableModel{
             values.add(value);
         }
 
-        final Vector<String> colNamesVec = new Vector<>(); colNamesVec.add(colNames[0]); colNamesVec.add(colNames[1]); colNamesVec.add(colNames[2]);
+        final Vector<String> colNamesVec = new Vector<>(); colNamesVec.add(colNames[0]); colNamesVec.add(colNames[1]); colNamesVec.add(colNames[2]); colNamesVec.add(colNames[3]);
         this.setDataVector(values, colNamesVec);
     }
 
