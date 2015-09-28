@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="dataSourceStorage">
   <data-source name="MySQL - @localhost" uuid="6f67ca39-d8b8-4ee3-a3d8-7ffd6783f378">
-    <database-info product="MySQL" version="5.5.25" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.36 ( Revision: 4fc1f969f740409a4e03750316df2c0e429f3dc8 )">
-      <extra-name-characters>#@</extra-name-characters>
-      <identifier-quote-string>`</identifier-quote-string>
-    </database-info>
-    <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower"/>
-    <schema name="" catalog="main_db"/>
-    <table name="order_table" schema="" catalog="main_db" type="TABLE">
-      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="managerName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
-      <column name="comment" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
-      <primary-key name="PRIMARY" columns="id"/>
-    </table>
-    <table name="orderlist_table" schema="" catalog="main_db" type="TABLE">
-      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="order_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <column name="stus_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <column name="quantity_req" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <primary-key name="PRIMARY" columns="id"/>
-    </table>
-    <table name="stipp_table" schema="" catalog="main_db" type="TABLE">
-      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <column name="stus_id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <column name="prodName_ven" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
-      <column name="venName" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <column name="price_ven" sqlType="DOUBLE UNSIGNED" precision="22" scale="0" nullable="true" jdbcType="8"/>
-      <column name="quantity_ven" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="true" jdbcType="4"/>
-    </table>
-    <table name="stus_table" schema="" catalog="main_db" type="TABLE">
-      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="prodName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
-      <column name="catName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
-      <primary-key name="PRIMARY" columns="id"/>
-    </table>
-    <table name="vendor" schema="" catalog="main_db" type="TABLE">
-      <column name="id" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="saleManagerName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
-      <column name="purchManagerName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
-      <primary-key name="PRIMARY" columns="id"/>
-    </table>
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
   </data-source>
 </component>

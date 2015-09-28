@@ -30,7 +30,7 @@ public class Graphic_main extends JFrame{
     private JPasswordField password; //authorization
     private JTextField search;
     private ArrayList<JComboBox> Kategorii;
-    private JButton connect, show, discon, mkOder, showOrders;
+    private JButton connect, show, discon, mkOder, showOrders, canOrder;
 
     private KeyAdapter keyLforConn, keyLforShow;
 
@@ -69,9 +69,9 @@ public class Graphic_main extends JFrame{
 
         search = new JTextField("72", 10); //-----------------search field
         login = new JLabel("Login");
-        user = new JTextField("root", 4);
+        user = new JTextField("admin", 4);
         pass = new JLabel("Pass:");
-        password = new JPasswordField("",7);
+        password = new JPasswordField("pool",7);
     //==============================================================================
     //===================================="Connect"=================================
         connect = new JButton("Войти");
@@ -106,6 +106,13 @@ public class Graphic_main extends JFrame{
             global_split_pane.revalidate();
         });
     //==============================================================================
+        canOrder = new JButton("Отменить");
+        canOrder.addActionListener((ActionEvent e) -> {
+            canOrderAction();
+            global_split_pane.setTopComponent(null);
+            global_split_pane.setDividerLocation(0);
+            global_split_pane.revalidate();
+        });
     //==============================================================================
             atrzPanel.add(login);
             atrzPanel.add(user);
@@ -131,8 +138,13 @@ public class Graphic_main extends JFrame{
         this.setIconImage(img);
 
 
-
-        this.add(new JLabel("Здрасти."), BorderLayout.NORTH);
+        ImageIcon icon = new ImageIcon("images\\metgears.png");
+        JLabel thumb = new JLabel();
+        thumb.setIcon(icon);
+        JPanel beaut = new JPanel();
+        beaut.setBackground(Color.BLACK);
+        beaut.add(thumb);
+        this.add(beaut, BorderLayout.NORTH);
         this.add(inputPane, BorderLayout.SOUTH);
         //this.add(sidePane, BorderLayout.WEST);
 
@@ -180,7 +192,7 @@ public class Graphic_main extends JFrame{
         protected JButton button;
 
         private String label;
-        private int row;
+        //private int row;
         private boolean isPushed;
 
         public ButtonEditor(JCheckBox checkBox) {
@@ -191,6 +203,16 @@ public class Graphic_main extends JFrame{
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     fireEditingStopped();
+                    int answer = JOptionPane.showConfirmDialog(button, "Удалить выбранный товар из заказа?");
+                    if(answer == JOptionPane.YES_OPTION)
+                    {
+                        //System.out.println(super.getComponent().getClass().toString());
+                        //System.out.println("before: ordertabSIZE: "+mainThread.getOrderTabMod().getRowCount()+" | row index: "+row);
+                        mainThread.getOrderTabMod().removeRow(ProdOrdTable.getSelectedRow());
+
+
+                        //System.out.println("after: ordertabSIZE: " + mainThread.getOrderTabMod().getRowCount() + " | row index: " + row);
+                    }
                 }
             });
         }
@@ -207,7 +229,8 @@ public class Graphic_main extends JFrame{
             label = (value == null) ? "" : value.toString();
             button.setText(label);
             isPushed = true;
-            this.row = row;
+            //this.row = row;
+            //System.err.print("ROW:" + row);
             return button;
         }
 
@@ -215,15 +238,8 @@ public class Graphic_main extends JFrame{
             if (isPushed) {
                 //
                 //
-                int answer = JOptionPane.showConfirmDialog(button, "Удалить выбранный товар из заказа?");
-                if(answer == JOptionPane.YES_OPTION)
-                {
-                    System.out.println(super.getComponent().getClass().toString());
-                    System.out.println("before: ordertabSIZE: "+mainThread.getOrderTabMod().getRowCount()+" | row index: "+row);
-                    mainThread.getOrderTabMod().removeRow(row);
 
-                    System.out.println("after: ordertabSIZE: " + mainThread.getOrderTabMod().getRowCount() + " | row index: " + row);
-                }
+
 
 
                 // System.out.println(label + ": Ouch!");
@@ -287,6 +303,7 @@ public class Graphic_main extends JFrame{
         else if(mainThread.getUser().getType()==2) //prch
         {
             workPanel.add(showOrders);
+            showOrders.setVisible(true);
             workPanel.add(discon);
         }
         else
@@ -397,6 +414,7 @@ public class Graphic_main extends JFrame{
 
     private void showOrdersAction()
     {
+        showOrders.setVisible(false);
         try {
             mainThread.build_Order_Tables();
             mainThread.mkOrderListTable();
@@ -416,6 +434,8 @@ public class Graphic_main extends JFrame{
         //================Установка Ширины Колонок==================
 
         scPfOrdLstTable = new JScrollPane(OrderListTable);
+
+        sidePane.removeAll();
         sidePane.add(scPfOrdLstTable, BorderLayout.CENTER);
         sidePane.revalidate();
 
@@ -442,6 +462,7 @@ public class Graphic_main extends JFrame{
 
                     //double divider =(double) STUSTable.getRowCount()/((double) STUSTable.getRowCount()+(double) STIPPTable.getRowCount());
                     stus_stipp_pane.setTopComponent(scPfPrOrdTable);
+                    stus_stipp_pane.setDividerLocation(0.5);
 
                     //stus_stipp_pane.validate();
 
@@ -487,11 +508,14 @@ public class Graphic_main extends JFrame{
 
             sidePane.removeAll();
             stus_stipp_pane.removeAll();
-            global_split_pane.remove(stus_stipp_pane);
-            global_split_pane.remove(sidePane);
 
+            try {
+                global_split_pane.remove(stus_stipp_pane);
+                global_split_pane.remove(sidePane);
+            } catch (NullPointerException e){}
             atrzPanel.setVisible(true);
             workPanel.removeAll();
+            Kategorii.clear();
             workPanel.setVisible(false);
             inputPane.revalidate();
 
@@ -500,6 +524,14 @@ public class Graphic_main extends JFrame{
         catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "IN THE DISCONNECTION"+ex.getMessage(), "Error", WIDTH);
         }
+    }
+
+    private void canOrderAction() {
+
+        sidePane.removeAll();
+        sidePane.revalidate();
+        ProdOrdTable = null;
+        scPfPrOrdTable = null;
     }
 
     private void mkOrderAction() {
@@ -529,6 +561,7 @@ public class Graphic_main extends JFrame{
             JPanel intputOrderPane = new JPanel();
             intputOrderPane.add(commentTextField, BorderLayout.SOUTH);
             intputOrderPane.add(sendOrder);
+            intputOrderPane.add(canOrder);
             sidePane.add(intputOrderPane, BorderLayout.SOUTH);
             sidePane.revalidate();
         }
