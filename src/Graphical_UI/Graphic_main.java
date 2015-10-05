@@ -43,7 +43,7 @@ public class Graphic_main extends JFrame{
     public Graphic_main() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         this.setTitle("MetallGearsViewer");
-        this.setSize(1300, 800);
+        this.setSize(1300, 700);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
         this.addWindowListener(new WindowAdapter() {
@@ -75,7 +75,7 @@ public class Graphic_main extends JFrame{
     //==============================================================================
     //===================================="Connect"=================================
         connect = new JButton("Войти");
-        connect.addActionListener((ActionEvent e) -> { connectAction(); });
+        connect.addActionListener((ActionEvent e) -> connectAction());
     //====================================="Show"===================================
         show = new JButton("Search");
         show.addActionListener((ActionEvent e) -> {
@@ -134,7 +134,7 @@ public class Graphic_main extends JFrame{
         user.addKeyListener(keyLforConn);
         search.addKeyListener(keyLforShow);
         //===================================set icon=======================
-        Image img = new ImageIcon("images\\Mini_logo.png").getImage();
+        Image img = new ImageIcon("images\\Mini_logo2.png").getImage();
         this.setIconImage(img);
 
 
@@ -142,7 +142,7 @@ public class Graphic_main extends JFrame{
         JLabel thumb = new JLabel();
         thumb.setIcon(icon);
         JPanel beaut = new JPanel();
-        beaut.setBackground(Color.BLACK);
+        beaut.setBackground(Color.decode("#252525"));
         beaut.add(thumb);
         this.add(beaut, BorderLayout.NORTH);
         this.add(inputPane, BorderLayout.SOUTH);
@@ -546,17 +546,20 @@ public class Graphic_main extends JFrame{
                     new ButtonEditor(new JCheckBox()));
             scPfPrOrdTable = new JScrollPane(ProdOrdTable);
             sidePane.add(scPfPrOrdTable, BorderLayout.CENTER);
-            JTextField commentTextField = new JTextField("Комментарий...", 30);
+            JTextField commentTextField = new JTextField("Комментарий...", 20);
 
 
 
             JButton sendOrder = new JButton("Отправить");
             sendOrder.addActionListener((ActionEvent ev) -> {
+
                 mainThread.getOrderTabMod().setComment(commentTextField.getText());
                 mainThread.getOrderTabMod().exportTable();
+                canOrderAction();
+                global_split_pane.setTopComponent(null);
+                global_split_pane.setDividerLocation(0);
+                global_split_pane.revalidate();
 
-                sidePane.removeAll();
-                sidePane.revalidate();
             });
             JPanel intputOrderPane = new JPanel();
             intputOrderPane.add(commentTextField, BorderLayout.SOUTH);
