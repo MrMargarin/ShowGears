@@ -96,14 +96,10 @@ public class Graphic_main extends JFrame{
         });
     //====================================="Export to Excel"=============================
         exportOrders = new JButton("Вывести");
-        exportOrders.addActionListener((ActionEvent e) -> {
-            exportAction();
-        });
+        exportOrders.addActionListener((ActionEvent e) -> exportAction());
     //====================================="Disconnect"=============================
         discon = new JButton("Discon");
-        discon.addActionListener((ActionEvent e) -> {
-            disconAction();
-        });
+        discon.addActionListener((ActionEvent e) -> disconAction());
     //====================================="Make Oder"==============================
         mkOder = new JButton("Заказ");
         mkOder.addActionListener((ActionEvent e) -> {
@@ -343,7 +339,7 @@ public class Graphic_main extends JFrame{
             for(int i =0; i<Kategorii.size(); i++) catFull+=Kategorii.get(i).getSelectedItem().toString() + "/";
 
             StringBuilder cFull = new StringBuilder(catFull);
-            cFull.deleteCharAt(cFull.length()-1);
+            cFull.deleteCharAt(cFull.length() - 1);
 
             mainThread.mkSTUSsearch(search.getText(), cFull.toString());
 
@@ -444,7 +440,7 @@ public class Graphic_main extends JFrame{
             public boolean isCellEditable(int row, int col) {
             switch (col) {
 
-                case 4:
+                case 5:
                     return true;
                 default:
                     return false;

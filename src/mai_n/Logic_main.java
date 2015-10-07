@@ -114,6 +114,8 @@ public class Logic_main {
 
 
         srch = "select * from stus_table where "+namField+" like \'%" + search + "%\' and CatName like \'"+categ+"\'";
+
+        System.out.println(srch);
         mainTableMod.fillTable(srch);
     }
 

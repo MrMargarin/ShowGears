@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Objects;
 import java.util.Vector;
 import mai_n.MySQLConnector;
@@ -117,13 +118,18 @@ public class ProdOrderTable extends DefaultTableModel{
     
     public void exportTable()
     {
-        System.out.println("I am in ProdOrderTable.exportTable.");
-
+/*
         String sql ="insert into "+orderTable+
                 //+ orderNumber+
                 " (`comment`, `managerName`) values ('"+ comment+
                 "', '"       + managerName+
                 "');";
+*/
+
+        String sql ="insert into "+orderTable+
+                //+ orderNumber+
+                " (`comment`, `managerName`, `date`) values ('"+ comment+
+                "', '"       + managerName+ "', NOW());";
 
 
         try {

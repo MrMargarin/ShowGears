@@ -27,7 +27,8 @@ public class OrderListTable extends DefaultTableModel{
             case 1: return String.class;
             case 2: return String.class;
             case 3: return String.class;
-            case 4: return Boolean.class;
+            case 4: return String.class;
+            case 5: return Boolean.class;
             default: return String.class;
         }
     }
@@ -42,7 +43,7 @@ public class OrderListTable extends DefaultTableModel{
         //String sqls = "select * from "+tableName;
 
 
-        String sqls = "select order_table.id, order_table.`comment`, users.Surname, users.Name, order_table.`status` from "+tableName+", "+usersTable+" where managerName like login";
+        String sqls = "select order_table.id, order_table.`comment`, users.Surname, users.Name, order_table.`date`, order_table.`status` from "+tableName+", "+usersTable+" where managerName like login";
 
         ResultSet rs = con.getResultSet(sqls);
         ResultSetMetaData data = rs.getMetaData();
