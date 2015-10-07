@@ -13,10 +13,24 @@ import java.util.Vector;
  */
 public class OrderListTable extends DefaultTableModel{
 
-    private static final String[] colNames = {"Номер", "Комментарий", "Фамилия", "Имя"};
+    private static final String[] colNames = {"Номер", "Комментарий", "Фамилия", "Имя", "Завершен", "Дата создания"};
     private static final String tableName = "order_table";
     private static final String usersTable = "users";
     private MySQLConnector con;
+
+    @Override
+    public Class<?> getColumnClass(int column)
+    {
+        switch (column)
+        {
+            case 0: return String.class;
+            case 1: return String.class;
+            case 2: return String.class;
+            case 3: return String.class;
+            case 4: return Boolean.class;
+            default: return String.class;
+        }
+    }
 
     public OrderListTable(MySQLConnector con) throws SQLException {
         super((Object[][]) null, null);
@@ -28,7 +42,7 @@ public class OrderListTable extends DefaultTableModel{
         //String sqls = "select * from "+tableName;
 
 
-        String sqls = "select order_table.id, order_table.`comment`, users.Surname, users.Name from "+tableName+", "+usersTable+" where managerName like login";
+        String sqls = "select order_table.id, order_table.`comment`, users.Surname, users.Name, order_table.`status` from "+tableName+", "+usersTable+" where managerName like login";
 
         ResultSet rs = con.getResultSet(sqls);
         ResultSetMetaData data = rs.getMetaData();
@@ -41,16 +55,26 @@ public class OrderListTable extends DefaultTableModel{
         //==================================read-data===========================
         while (rs.next()) {
             Vector<Object> value = new Vector<>();
-            for (int i = 1; i <= maxColumns; i++)
-                value.add(con.getResultSet().getObject(i));
+            for (int i = 1; i <= maxColumns; i++) {
+               Object val = con.getResultSet().getObject(i);
+               // if(i == (maxColumns))
+               //{value.add((boolean) val); break;}
+                value.add(val);
+            }
             values.add(value);
         }
 
-        final Vector<String> colNamesVec = new Vector<>(); colNamesVec.add(colNames[0]); colNamesVec.add(colNames[1]); colNamesVec.add(colNames[2]); colNamesVec.add(colNames[3]);
+        final Vector<String> colNamesVec = new Vector<>(); //colNamesVec.add(colNames[0]); colNamesVec.add(colNames[1]); colNamesVec.add(colNames[2]); colNamesVec.add(colNames[3]);
+        for(String i : colNames) colNamesVec.add(i);
+
         this.setDataVector(values, colNamesVec);
     }
 
 
+    public void confirmChanges()
+    {
+
+    }
 
 
 }

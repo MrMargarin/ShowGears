@@ -8,7 +8,19 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Vector;
 import mai_n.MySQLConnector;
-
+import java.io.FileNotFoundException;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 
 public class ProdOrderTable extends DefaultTableModel{
@@ -138,6 +150,35 @@ public class ProdOrderTable extends DefaultTableModel{
 
             con.execSQL(sql); //insert orders
 
+    }
+
+    public void exportToExcell()
+    {
+        //Exporting to Excel
+        try{
+            Workbook wb = new HSSFWorkbook();
+            CreationHelper createhelper = wb.getCreationHelper();
+            Sheet sheet = wb.createSheet("new sheet");
+            Row row = null;
+            Cell cell = null;
+            for (int i=0;i<this.getRowCount();i++) {
+                row = sheet.createRow(i);
+                for (int j=0;j<this.getColumnCount();j++) {
+
+                    cell = row.createCell(j);
+                    cell.setCellValue(this.getValueAt(i, j).toString());
+                }
+            }
+
+
+            FileOutputStream out = new FileOutputStream("D:\\workbook.xls");
+            wb.write(out);
+            out.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ProdOrderTable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ProdOrderTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void setComment(String comment)

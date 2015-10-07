@@ -17,10 +17,12 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ListSelectionModel;
 /**
  * Created by Rimskii on 12.09.2015.
  */
 public class Graphic_main extends JFrame{
+
 
     private JPanel workPanel; //панель с кнопками и поиском
     private JPanel atrzPanel; //панель для подключения к БД
@@ -30,7 +32,7 @@ public class Graphic_main extends JFrame{
     private JPasswordField password; //authorization
     private JTextField search;
     private ArrayList<JComboBox> Kategorii;
-    private JButton connect, show, discon, mkOder, showOrders, canOrder;
+    private JButton connect, show, discon, mkOder, showOrders, canOrder, exportOrders;
 
     private KeyAdapter keyLforConn, keyLforShow;
 
@@ -91,6 +93,11 @@ public class Graphic_main extends JFrame{
             global_split_pane.setTopComponent(sidePane);
             global_split_pane.setDividerLocation(0.3);
             global_split_pane.revalidate();
+        });
+    //====================================="Export to Excel"=============================
+        exportOrders = new JButton("Вывести");
+        exportOrders.addActionListener((ActionEvent e) -> {
+            exportAction();
         });
     //====================================="Disconnect"=============================
         discon = new JButton("Discon");
@@ -258,6 +265,11 @@ public class Graphic_main extends JFrame{
         }
     }
 
+    private void exportAction()
+    {
+        mainThread.getOrderTabMod().exportToExcell();
+    }
+
     private void connectAction()
     {
         try {
@@ -302,8 +314,12 @@ public class Graphic_main extends JFrame{
         }
         else if(mainThread.getUser().getType()==2) //prch
         {
+
+
             workPanel.add(showOrders);
+            workPanel.add(exportOrders);
             showOrders.setVisible(true);
+            exportOrders.setVisible(true);
             workPanel.add(discon);
         }
         else
@@ -425,7 +441,17 @@ public class Graphic_main extends JFrame{
 
         OrderListTable = new JTable(mainThread.getOrderListTabMod()){
             @Override
-            public boolean isCellEditable(int arg0, int arg1){return false;}};
+            public boolean isCellEditable(int row, int col) {
+            switch (col) {
+
+                case 4:
+                    return true;
+                default:
+                    return false;
+            }
+            }};
+
+        OrderListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //==========================================================
 
         //================Установка Сортировщика====================
@@ -555,6 +581,7 @@ public class Graphic_main extends JFrame{
 
                 mainThread.getOrderTabMod().setComment(commentTextField.getText());
                 mainThread.getOrderTabMod().exportTable();
+                JOptionPane.showMessageDialog(this, "Заказ принят.", "Заказ", WIDTH);
                 canOrderAction();
                 global_split_pane.setTopComponent(null);
                 global_split_pane.setDividerLocation(0);
