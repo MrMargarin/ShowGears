@@ -30,6 +30,7 @@ public class ProdOrderTable extends DefaultTableModel{
     private final String orderProdsNameTable = "orderlist_table";
     private final String orderTable = "order_table";
     private final String rowCountSQL = "select count(*) from order_table";
+    private final String path = "D:\\workbook.xls"; //path to export excell file
     
 
     
@@ -164,11 +165,18 @@ public class ProdOrderTable extends DefaultTableModel{
         try{
             Workbook wb = new HSSFWorkbook();
             CreationHelper createhelper = wb.getCreationHelper();
-            Sheet sheet = wb.createSheet("new sheet");
+            Sheet sheet = wb.createSheet("Заказ");
             Row row = null;
             Cell cell = null;
+            final int offset = 2;
+            row = sheet.createRow(0);
+            cell = row.createCell(0);
+            cell.setCellValue("Заказ №"+orderNumber);
+            row = sheet.createRow(1);
+            cell = row.createCell(0);
+            cell.setCellValue("Менеджер: "+managerName);
             for (int i=0;i<this.getRowCount();i++) {
-                row = sheet.createRow(i);
+                row = sheet.createRow(i+offset);
                 for (int j=0;j<this.getColumnCount();j++) {
 
                     cell = row.createCell(j);
@@ -177,7 +185,7 @@ public class ProdOrderTable extends DefaultTableModel{
             }
 
 
-            FileOutputStream out = new FileOutputStream("D:\\workbook.xls");
+            FileOutputStream out = new FileOutputStream(path);
             wb.write(out);
             out.close();
         } catch (FileNotFoundException ex) {

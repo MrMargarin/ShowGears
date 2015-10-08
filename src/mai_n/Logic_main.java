@@ -19,6 +19,7 @@ public class Logic_main {
     private STIPP_Table subTableMod;
     private ProdOrderTable orderTabMod;     //������ ������
     private OrderListTable orderListTabMod;
+    private OrderListTable orderListSaleTabMod;
 
     private User user;
 
@@ -49,9 +50,17 @@ public class Logic_main {
             setCats(getParList());
     }
 
+
+
     public void build_Order_Tables() throws SQLException {
+        if(user.getType()==2){
         setOrderListTabMod(new OrderListTable(getConnector()));
-        setOrderTabMod(new ProdOrderTable(getConnector()));
+        setOrderTabMod(new ProdOrderTable(getConnector()));}
+        else{
+            setOrderListSaleTabMod(new OrderListTable(getConnector()));
+        }
+
+
 
     }
 
@@ -134,7 +143,12 @@ public class Logic_main {
     }
 
 
-    public void mkOrderListTable() throws SQLException { orderListTabMod.fillTable(); }
+    public void mkOrderListTable() throws SQLException {
+        if(user.getType()==2)  orderListTabMod.fillTable();
+        else {
+            orderListSaleTabMod.fillTableSale(userName);
+        }
+    }
 
     public OrderListTable getOrderListTabMod() {
         return orderListTabMod;
@@ -160,5 +174,13 @@ public class Logic_main {
 
     public void setParList(ParamList parList) {
         this.parList = parList;
+    }
+
+    public OrderListTable getOrderListSaleTabMod() {
+        return orderListSaleTabMod;
+    }
+
+    public void setOrderListSaleTabMod(OrderListTable orderListSaleTabMod) {
+        this.orderListSaleTabMod = orderListSaleTabMod;
     }
 }

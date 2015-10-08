@@ -32,13 +32,13 @@ public class Graphic_main extends JFrame{
     private JPasswordField password; //authorization
     private JTextField search;
     private ArrayList<JComboBox> Kategorii;
-    private JButton connect, show, discon, mkOder, showOrders, canOrder, exportOrders;
+    private JButton connect, show, discon, mkOder, showOrders, canOrder, exportOrders, showOrdersS, closeOrders;
 
     private KeyAdapter keyLforConn, keyLforShow;
 
     private JSplitPane stus_stipp_pane, global_split_pane;
-    private JPanel inputPane, outputPane, sidePane; // panel for make orders;
-    private JScrollPane scPfSTUSTable, scPfSTIPPTable, scPfPrOrdTable, scPfOrdLstTable; //   "scPf" - scroll panel for
+    private JPanel inputPane, outputPane, sidePane, rightPane; // panel for make orders;
+    private JScrollPane scPfSTUSTable, scPfSTIPPTable, scPfPrOrdTable, scPfOrdLstTable, scPfOrdLstSaleTable; //   "scPf" - scroll panel for
 
     private Logic_main mainThread;
 
@@ -66,6 +66,7 @@ public class Graphic_main extends JFrame{
         atrzPanel = new JPanel();
         workPanel = new JPanel();
         sidePane = new JPanel(new BorderLayout());
+        rightPane = new JPanel(new BorderLayout());
 
         Kategorii = new ArrayList<JComboBox>();
 
@@ -85,6 +86,33 @@ public class Graphic_main extends JFrame{
             global_split_pane.setBottomComponent(stus_stipp_pane);
             global_split_pane.revalidate();
         });
+
+
+
+        //====================================="Show OrderSale"=============================
+        showOrdersS = new JButton("Показать Заказы");
+        showOrdersS.addActionListener((ActionEvent e) -> {
+            showOrdersSaleAction();
+            showOrdersS.setVisible(false);
+            closeOrders.setVisible(true);
+
+        });
+
+        closeOrders = new JButton("Закрыть Заказы");
+        closeOrders.addActionListener((ActionEvent e) -> {
+            closeOrders.setVisible(false);
+            showOrdersS.setVisible(true);
+            rightPane.removeAll();
+            this.remove(rightPane);
+            global_split_pane.revalidate();
+
+        });
+
+
+
+
+
+
     //====================================="Show Order"=============================
         showOrders = new JButton("Показать Заказы");
         showOrders.addActionListener((ActionEvent e) -> {
@@ -149,6 +177,8 @@ public class Graphic_main extends JFrame{
         beaut.add(thumb);
         this.add(beaut, BorderLayout.NORTH);
         this.add(inputPane, BorderLayout.SOUTH);
+
+
         //this.add(sidePane, BorderLayout.WEST);
 
         this.add(global_split_pane, BorderLayout.CENTER);
@@ -306,6 +336,10 @@ public class Graphic_main extends JFrame{
             workPanel.add(show);
             workPanel.add(discon);
             workPanel.add(mkOder);
+            workPanel.add(showOrdersS);
+            workPanel.add(closeOrders);
+            closeOrders.setVisible(false);
+            showOrdersS.setVisible(true);
             search.requestFocus(); //focus search field
         }
         else if(mainThread.getUser().getType()==2) //prch
@@ -424,6 +458,40 @@ public class Graphic_main extends JFrame{
 
     }
 
+
+    private void showOrdersSaleAction() {
+
+
+        try {
+            mainThread.build_Order_Tables();
+            mainThread.mkOrderListTable();
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        if (mainThread.getOrderListSaleTabMod().getRowCount() == 0)
+            JOptionPane.showMessageDialog(this, "Заказов нет.", "X", WIDTH);
+
+        OrderListTable = new JTable(mainThread.getOrderListSaleTabMod()) {
+            @Override
+            public boolean isCellEditable(int row, int col) {return false;}
+        };
+
+        OrderListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //==========================================================
+
+        //================Установка Сортировщика====================
+        TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(mainThread.getOrderListSaleTabMod());
+        OrderListTable.setRowSorter(sorter1);
+
+        scPfOrdLstSaleTable = new JScrollPane(OrderListTable);
+
+        rightPane.removeAll();
+        rightPane.add(scPfOrdLstSaleTable, BorderLayout.CENTER);
+        this.add(rightPane, BorderLayout.EAST);
+        //rightPane.revalidate();
+
+    }
+
     private void showOrdersAction()
     {
         showOrders.setVisible(false);
@@ -445,7 +513,9 @@ public class Graphic_main extends JFrame{
                 default:
                     return false;
             }
-            }};
+            }
+
+        };
 
         OrderListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //==========================================================
@@ -530,6 +600,7 @@ public class Graphic_main extends JFrame{
 
             sidePane.removeAll();
             stus_stipp_pane.removeAll();
+            rightPane.removeAll();
 
             try {
                 global_split_pane.remove(stus_stipp_pane);
