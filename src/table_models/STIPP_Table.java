@@ -19,7 +19,7 @@ public class STIPP_Table {
     public STIPP_Table(MySQLConnector con)
     {
         colNames = new Vector<String>();
-        colNames.add("Код товара");colNames.add("Поставщик");colNames.add("НаименованиеПоставщика");colNames.add("Цена");colNames.add("Наличие");
+        colNames.add("Код товара");colNames.add("Поставщик");colNames.add("Наименование");colNames.add("Цена");colNames.add("Наличие");
         this.con = con;
     }
 

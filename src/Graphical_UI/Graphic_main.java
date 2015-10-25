@@ -71,16 +71,16 @@ public class Graphic_main extends JFrame{
         Kategorii = new ArrayList<JComboBox>();
 
         search = new JTextField("72", 10); //-----------------search field
-        login = new JLabel("Login");
-        user = new JTextField("admin", 4);
-        pass = new JLabel("Pass:");
+        login = new JLabel("Пользователь");
+        user = new JTextField("sale", 4);
+        pass = new JLabel("Пароль:");
         password = new JPasswordField("pool",7);
     //==============================================================================
     //===================================="Connect"=================================
         connect = new JButton("Войти");
         connect.addActionListener((ActionEvent e) -> connectAction());
     //====================================="Show"===================================
-        show = new JButton("Search");
+        show = new JButton("Искать");
         show.addActionListener((ActionEvent e) -> {
             searchAction();
             global_split_pane.setBottomComponent(stus_stipp_pane);
@@ -126,18 +126,18 @@ public class Graphic_main extends JFrame{
         exportOrders = new JButton("Вывести");
         exportOrders.addActionListener((ActionEvent e) -> exportAction());
     //====================================="Disconnect"=============================
-        discon = new JButton("Discon");
+        discon = new JButton("Выйти");
         discon.addActionListener((ActionEvent e) -> disconAction());
     //====================================="Make Oder"==============================
-        mkOder = new JButton("Заказ");
+        mkOder = new JButton("Сделать Заказ");
         mkOder.addActionListener((ActionEvent e) -> {
             mkOrderAction();
             global_split_pane.setTopComponent(sidePane);
-            global_split_pane.setDividerLocation(0.3);
+            global_split_pane.setDividerLocation(0.35);
             global_split_pane.revalidate();
         });
     //==============================================================================
-        canOrder = new JButton("Отменить");
+        canOrder = new JButton("Отменить Заказ");
         canOrder.addActionListener((ActionEvent e) -> {
             canOrderAction();
             global_split_pane.setTopComponent(null);
@@ -293,7 +293,12 @@ public class Graphic_main extends JFrame{
 
     private void exportAction()
     {
-        mainThread.getOrderTabMod().exportToExcell();
+        String manName, ordNumber;
+        manName = this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 2).toString() + " " + this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 3).toString();
+
+        ordNumber = this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 0).toString();
+        mainThread.getOrderTabMod().exportToExcell(manName, ordNumber);
+        JOptionPane.showMessageDialog(this, "Файл был сохранен в папке "+mainThread.getOrderTabMod().getPath());
     }
 
     private void connectAction()

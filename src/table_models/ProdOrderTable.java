@@ -5,18 +5,15 @@ import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Objects;
 import java.util.Vector;
 import mai_n.MySQLConnector;
 import java.io.FileNotFoundException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.DefaultTableModel;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,7 +27,7 @@ public class ProdOrderTable extends DefaultTableModel{
     private final String orderProdsNameTable = "orderlist_table";
     private final String orderTable = "order_table";
     private final String rowCountSQL = "select count(*) from order_table";
-    private final String path = "D:\\workbook.xls"; //path to export excell file
+    private final String path = "export\\"; //path to export excell file
     
 
     
@@ -159,7 +156,7 @@ public class ProdOrderTable extends DefaultTableModel{
 
     }
 
-    public void exportToExcell()
+    public void exportToExcell(String manName, String ordNum)
     {
         //Exporting to Excel
         try{
@@ -171,10 +168,10 @@ public class ProdOrderTable extends DefaultTableModel{
             final int offset = 2;
             row = sheet.createRow(0);
             cell = row.createCell(0);
-            cell.setCellValue("Заказ №"+orderNumber);
+            cell.setCellValue("Заказ №"+ordNum);
             row = sheet.createRow(1);
             cell = row.createCell(0);
-            cell.setCellValue("Менеджер: "+managerName);
+            cell.setCellValue("Менеджер: "+manName);
             for (int i=0;i<this.getRowCount();i++) {
                 row = sheet.createRow(i+offset);
                 for (int j=0;j<this.getColumnCount();j++) {
@@ -185,7 +182,7 @@ public class ProdOrderTable extends DefaultTableModel{
             }
 
 
-            FileOutputStream out = new FileOutputStream(path);
+            FileOutputStream out = new FileOutputStream(getPath()+"Zakaz"+ordNum+".xls");
             wb.write(out);
             out.close();
         } catch (FileNotFoundException ex) {
@@ -197,5 +194,8 @@ public class ProdOrderTable extends DefaultTableModel{
 
     public void setComment(String comment)
     {this.comment = comment;}
-    
+
+    public String getPath() {
+        return path;
+    }
 }

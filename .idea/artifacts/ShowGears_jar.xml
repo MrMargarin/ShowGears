@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ShowGears:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ShowGears_jar</output-path>
+    <root id="archive" name="ShowGears.jar">
+      <element id="module-output" name="ShowGears" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/hibernate-commons-annotations-4.0.2.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/antlr-2.7.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/hibernate-core-4.2.2.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/dom4j-1.6.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jboss-logging-3.1.0.GA.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javassist-3.15.0-GA.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jboss-transaction-api_1.1_spec-1.0.1.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/Program Files (x86)/MySQL/MySQL Connector J/mysql-connector-java-5.1.36-bin.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/libs/poi-3.13/poi-3.13-20150929.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/libs/poi-3.13/poi-ooxml-3.13-20150929.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/libs/poi-3.13/poi-examples-3.13-20150929.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/libs/poi-3.13/poi-excelant-3.13-20150929.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/libs/poi-3.13/poi-scratchpad-3.13-20150929.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/libs/poi-3.13/poi-ooxml-schemas-3.13-20150929.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
