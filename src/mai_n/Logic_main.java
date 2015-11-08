@@ -44,7 +44,7 @@ public class Logic_main {
 
             setMainTableMod(new STUS_Table(getConnector()));
             setSubTableMod(new STIPP_Table(getConnector()));
-            //orderTabMod = new ProdOrderTable(connector, userName);
+
             setParList(new ParamList(paramName, paramTableName, this.connector));
             getParList().ParamListSeparate();
             setCats(getParList());

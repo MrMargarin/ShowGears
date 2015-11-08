@@ -23,15 +23,16 @@ import javax.swing.ListSelectionModel;
  */
 public class Graphic_main extends JFrame{
 
-
+    //private ActionListener acK0, acK0, acK0, acK0, acK0
     private JPanel workPanel; //панель с кнопками и поиском
     private JPanel atrzPanel; //панель для подключения к БД
+    private JPanel subPaneWithCategs;
     private JTable STUSTable, STIPPTable, ProdOrdTable, OrderListTable; //Таблицы
     private JLabel pass, login;
     private JTextField user;
     private JPasswordField password; //authorization
     private JTextField search;
-    private ArrayList<JComboBox> Kategorii;
+    private ArrayList <JComboBox> Kategorii;
     private JButton connect, show, discon, mkOder, showOrders, canOrder, exportOrders, showOrdersS, closeOrders;
 
     private KeyAdapter keyLforConn, keyLforShow;
@@ -65,6 +66,8 @@ public class Graphic_main extends JFrame{
         inputPane = new JPanel();
         atrzPanel = new JPanel();
         workPanel = new JPanel();
+        subPaneWithCategs = new JPanel();
+        subPaneWithCategs.setLayout(new BoxLayout(subPaneWithCategs, BoxLayout.Y_AXIS));
         sidePane = new JPanel(new BorderLayout());
         rightPane = new JPanel(new BorderLayout());
 
@@ -293,11 +296,11 @@ public class Graphic_main extends JFrame{
 
     private void exportAction()
     {
-        String manName, ordNumber;
-        manName = this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 2).toString() + " " + this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 3).toString();
+        String managerName, ordNumber;
+        managerName = this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 2).toString() + " " + this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 3).toString();
 
         ordNumber = this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 0).toString();
-        mainThread.getOrderTabMod().exportToExcell(manName, ordNumber);
+        mainThread.getOrderTabMod().exportToExcell(managerName, ordNumber);
         JOptionPane.showMessageDialog(this, "Файл был сохранен в папке "+mainThread.getOrderTabMod().getPath());
     }
 
@@ -333,11 +336,15 @@ public class Graphic_main extends JFrame{
             Kategorii.add(new JComboBox(vecOFCats.get(ind)));
 
 
+
             workPanel.add(new JLabel("Найти:"));
             workPanel.add(search);
-            for(int d=0; d<Kategorii.size(); d++){
-            workPanel.add(Kategorii.get(d));}
-
+            for(int d=0; d<Kategorii.size(); d++)
+            {
+                Kategorii.get(d).setSelectedItem("%");
+                subPaneWithCategs.add(Kategorii.get(d));
+            }
+            workPanel.add(subPaneWithCategs);
             workPanel.add(show);
             workPanel.add(discon);
             workPanel.add(mkOder);
@@ -375,12 +382,14 @@ public class Graphic_main extends JFrame{
             //================Поисковик=================================
 
             String catFull = "";
-            for(int i =0; i<Kategorii.size(); i++) catFull+=Kategorii.get(i).getSelectedItem().toString() + "/";
+            for(int i =0; i<Kategorii.size(); i++) catFull+=Kategorii.get(i).getSelectedItem().toString()+ "%";
+
+            String catFULL = "%" + catFull;
 
             StringBuilder cFull = new StringBuilder(catFull);
             cFull.deleteCharAt(cFull.length() - 1);
 
-            mainThread.mkSTUSsearch(search.getText(), cFull.toString());
+            mainThread.mkSTUSsearch(search.getText(), catFULL);
 
             if(mainThread.getMainTableMod().getNumOfItFnd()==0) JOptionPane.showMessageDialog(this, "По заданным параметрам не найдено ни одного товара.", "X", WIDTH);
 
@@ -668,6 +677,10 @@ public class Graphic_main extends JFrame{
             sidePane.revalidate();
         }
     }
+
+
+
+
 
 
 }
