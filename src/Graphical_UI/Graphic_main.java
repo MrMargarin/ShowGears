@@ -23,6 +23,8 @@ import javax.swing.ListSelectionModel;
  */
 public class Graphic_main extends JFrame{
 
+    private final String[] bases={"МетчикиПлашки","Сверла","Фрезы", "Измерилка"};
+
     //private ActionListener acK0, acK0, acK0, acK0, acK0
     private JPanel workPanel; //панель с кнопками и поиском
     private JPanel atrzPanel; //панель для подключения к БД
@@ -30,6 +32,7 @@ public class Graphic_main extends JFrame{
     private JTable STUSTable, STIPPTable, ProdOrdTable, OrderListTable; //Таблицы
     private JLabel pass, login;
     private JTextField user;
+    private JComboBox datBase;
     private JPasswordField password; //authorization
     private JTextField search;
     private ArrayList <JComboBox> Kategorii;
@@ -73,6 +76,7 @@ public class Graphic_main extends JFrame{
 
         Kategorii = new ArrayList<JComboBox>();
 
+        datBase = new JComboBox(bases);
         search = new JTextField("72", 10); //-----------------search field
         login = new JLabel("Пользователь");
         user = new JTextField("sale", 4);
@@ -152,6 +156,7 @@ public class Graphic_main extends JFrame{
             atrzPanel.add(user);
             atrzPanel.add(pass);
             atrzPanel.add(password);
+            atrzPanel.add(datBase);
             atrzPanel.add(connect);
 
 
@@ -236,19 +241,17 @@ public class Graphic_main extends JFrame{
 
             button = new JButton();
             button.setOpaque(true);
-            button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
-                    int answer = JOptionPane.showConfirmDialog(button, "Удалить выбранный товар из заказа?");
-                    if(answer == JOptionPane.YES_OPTION)
-                    {
-                        //System.out.println(super.getComponent().getClass().toString());
-                        //System.out.println("before: ordertabSIZE: "+mainThread.getOrderTabMod().getRowCount()+" | row index: "+row);
-                        mainThread.getOrderTabMod().removeRow(ProdOrdTable.getSelectedRow());
+            button.addActionListener(e -> {
+                fireEditingStopped();
+                int answer = JOptionPane.showConfirmDialog(button, "Удалить выбранный товар из заказа?");
+                if(answer == JOptionPane.YES_OPTION)
+                {
+                    //System.out.println(super.getComponent().getClass().toString());
+                    //System.out.println("before: ordertabSIZE: "+mainThread.getOrderTabMod().getRowCount()+" | row index: "+row);
+                    mainThread.getOrderTabMod().removeRow(ProdOrdTable.getSelectedRow());
 
 
-                        //System.out.println("after: ordertabSIZE: " + mainThread.getOrderTabMod().getRowCount() + " | row index: " + row);
-                    }
+                    //System.out.println("after: ordertabSIZE: " + mainThread.getOrderTabMod().getRowCount() + " | row index: " + row);
                 }
             });
         }
@@ -281,7 +284,7 @@ public class Graphic_main extends JFrame{
                 // System.out.println(label + ": Ouch!");
             }
             isPushed = false;
-            return new String(label);
+            return label;
         }
 
         public boolean stopCellEditing() {
@@ -304,10 +307,22 @@ public class Graphic_main extends JFrame{
         JOptionPane.showMessageDialog(this, "Файл был сохранен в папке "+mainThread.getOrderTabMod().getPath());
     }
 
-    private void connectAction()
-    {
+    private void connectAction() {
+        String stus_name;
+        switch (datBase.getSelectedIndex()){
+            case 0:
+            stus_name = "stus_baz";
+            case 1:
+            stus_name = "stus_svr";
+            case 2:
+            stus_name = "stus_frz";
+            case 3:
+            stus_name = "stus_izm";
+            default:
+            stus_name = "stus_svr";
+        }
         try {
-            mainThread = new Logic_main(user.getText(), password.getText());
+            mainThread = new Logic_main(user.getText(), password.getText(), stus_name);
         }
         catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Ошибка авторизации", WIDTH);
@@ -332,8 +347,7 @@ public class Graphic_main extends JFrame{
         if(mainThread.getUser().getType()==1) //sale
         {
             Vector<Vector> vecOFCats = mainThread.getParList().getParamsVector();
-            for(int ind = 0; ind < vecOFCats.size(); ind++)
-            Kategorii.add(new JComboBox(vecOFCats.get(ind)));
+            for (Vector vecOFCat : vecOFCats) Kategorii.add(new JComboBox(vecOFCat));
 
 
 
@@ -388,6 +402,8 @@ public class Graphic_main extends JFrame{
 
             StringBuilder cFull = new StringBuilder(catFull);
             cFull.deleteCharAt(cFull.length() - 1);
+
+
 
             mainThread.mkSTUSsearch(search.getText(), catFULL);
 

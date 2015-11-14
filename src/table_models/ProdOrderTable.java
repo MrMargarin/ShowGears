@@ -22,7 +22,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 
 public class ProdOrderTable extends DefaultTableModel{
-    private static final String[] colNames = {"Код товара", "Наименование", "Категория", "Количество", "Удалить"};
+    private static final String[] colNames = {"Код товара", "Наименование", "Категория", "Поставщик", "Количество", "Удалить"};
     private static final String[] colNamesWrem = {"Код товара", "Наименование", "Категория", "Количество"};
     private final String orderProdsNameTable = "orderlist_table";
     private final String orderTable = "order_table";
@@ -88,11 +88,19 @@ public class ProdOrderTable extends DefaultTableModel{
 
     }
 
-    public void fillTable(int orderCode) throws SQLException {   //table for PM, like SM's STUS  _PM
+    public void fillTable(int orderCode, String stusName) throws SQLException {   //table for PM, like SM's STUS  _PM
 
-        String sql = "SELECT stus_table.id, stus_table.prodName, stus_table.catName, orderlist_table.quantity_req " +
+        String stippName = "stipp_"+stusName.substring(5);
+
+        String sql = "SELECT "+stusName+".id, " +
+                stusName+".prodName, " +
+                stusName+".catName, " +
+                stippName+".venName, " +
+                "orderlist_table.quantity_req " +
                 "FROM orderlist_table " +
-                "INNER JOIN stus_table ON stus_table.id = orderlist_table.stus_id where orderlist_table.order_id like '"+orderCode+"'";
+                "INNER JOIN "+stusName+" ON "+stusName+".id = orderlist_table.stus_id " +
+                "INNER JOIN "+stippName+" ON "+stusName+".id = "+stippName+".stus_id " +
+                "where orderlist_table.order_id like '"+orderCode+"'";
         ResultSet rs = this.con.getResultSet(sql);
         ResultSetMetaData data = rs.getMetaData();
 
@@ -106,7 +114,12 @@ public class ProdOrderTable extends DefaultTableModel{
             values.add(value);
         }
 
-        final Vector<String> colNamesVec = new Vector<>(); colNamesVec.add(colNames[0]); colNamesVec.add(colNames[1]); colNamesVec.add(colNames[2]); colNamesVec.add(colNames[3]);
+        final Vector<String> colNamesVec = new Vector<>();
+        colNamesVec.add(colNames[0]);
+        colNamesVec.add(colNames[1]);
+        colNamesVec.add(colNames[2]);
+        colNamesVec.add(colNames[3]);
+        colNamesVec.add(colNames[4]);
         this.setDataVector(values, colNamesVec);
     }
 

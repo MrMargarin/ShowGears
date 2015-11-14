@@ -11,10 +11,11 @@ import mai_n.MySQLConnector;
 
 public class STIPP_Table {
     private final String searchField = "stus_id"; //Имя поля по которому производится поиск товара(первичный ключ)
-    private final String catTableName = "stipp_table";
+
     private DefaultTableModel subTable;
     private MySQLConnector con;
     private Vector<String> colNames;
+    private String catTableName;
 
     public STIPP_Table(MySQLConnector con)
     {
@@ -23,8 +24,9 @@ public class STIPP_Table {
         this.con = con;
     }
 
-    public void fillTable(String codeFieldName, int userType) throws SQLException
+    public void fillTable(String codeFieldName, int userType, String stippName) throws SQLException
     {
+        catTableName = stippName;
         String sqls = "select * from vendor";
         if(userType == 1)
             //sqls = "SELECT stus_id, prodName_ven, price_ven, quantity_ven from "+catTableName+" where "+searchField+" like \'"+codeFieldName+"\'";

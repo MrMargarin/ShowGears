@@ -12,8 +12,12 @@ public class Logic_main {
 
     private final String namField = "prodName"; //�������� ���� ������������ �������, �� �������� ���������� �����
     private final String urlToDB = "jdbc:mysql://localhost/main_db";
+    //private final String urlToDB = "jdbc:mysql://192.168.0.202/main_db";
     private final String paramName = "CatName"; //�������� ��������� �� �������� ����� ������������ �����
-    private final String paramTableName = "stus_table"; //�������� �������, ��� �������� �������� ��������� �� �������� ����� ������������ �����
+     //�������� �������, ��� �������� �������� ��������� �� �������� ����� ������������ �����
+
+    private String paramTableName;
+    private String stippTName;
 
     private STUS_Table mainTableMod;
     private STIPP_Table subTableMod;
@@ -34,7 +38,9 @@ public class Logic_main {
 
     private ParamList parList;
 
-    public Logic_main(String usm, String pss) throws SQLException, ClassNotFoundException, MyException {
+    public Logic_main(String usm, String pss, String datBase) throws SQLException, ClassNotFoundException, MyException {
+        paramTableName = datBase;
+        stippTName = "stipp_"+datBase.substring(5);
         setConnector(new MySQLConnector(urlToDB, usm, pss));
         setUserName(usm); //init user current name
         setUser(new User(usm, this.connector));
@@ -122,7 +128,7 @@ public class Logic_main {
     public void mkSTUSsearch(String search, Object categ) throws SQLException {
 
 
-        srch = "select * from stus_table where "+namField+" like \'%" + search + "%\' and CatName like \'"+categ+"\'";
+        srch = "select * from "+paramTableName+" where "+namField+" like \'%" + search + "%\' and CatName like \'"+categ+"\'";
 
         System.out.println(srch);
         mainTableMod.fillTable(srch);
@@ -130,7 +136,7 @@ public class Logic_main {
 
     public void mkSTIPP(String productCode) throws SQLException {
 
-        subTableMod.fillTable(productCode, user.getType());
+        subTableMod.fillTable(productCode, user.getType(), stippTName);
     }
 
     public void mkOrderTable()
@@ -139,7 +145,7 @@ public class Logic_main {
     }
 
     public void mkProdOrderTable(int code) throws SQLException {
-        orderTabMod.fillTable(code);
+        orderTabMod.fillTable(code, paramTableName);
     }
 
 
