@@ -14,7 +14,7 @@ import java.util.Vector;
  */
 public class OrderListTable extends DefaultTableModel{
 
-    private static final String[] colNames = {"Номер", "Комментарий", "Фамилия", "Имя", "Завершен", "Дата создания"};
+    private static final String[] colNames = {"Номер", "Комментарий", "Фамилия", "Имя", "Дата создания", "Завершен"};
     private static final String tableName = "order_table";
     private static final String usersTable = "users";
     private static final String statusNameFiels = "status";

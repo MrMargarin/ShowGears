@@ -23,7 +23,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 public class ProdOrderTable extends DefaultTableModel{
     private static final String[] colNames = {"Код товара", "Наименование", "Категория", "Поставщик", "Количество", "Удалить"};
-    private static final String[] colNamesWrem = {"Код товара", "Наименование", "Категория", "Количество"};
+    //private static final String[] colNamesWrem = {"Код товара", "Наименование", "Категория", "Количество"};
     private final String orderProdsNameTable = "orderlist_table";
     private final String orderTable = "order_table";
     private final String rowCountSQL = "select count(*) from order_table";
@@ -101,6 +101,7 @@ public class ProdOrderTable extends DefaultTableModel{
                 "INNER JOIN "+stusName+" ON "+stusName+".id = orderlist_table.stus_id " +
                 "INNER JOIN "+stippName+" ON "+stusName+".id = "+stippName+".stus_id " +
                 "where orderlist_table.order_id like '"+orderCode+"'";
+        System.out.println("Запрос из ProdOrderTable.fillTable: " +sql);
         ResultSet rs = this.con.getResultSet(sql);
         ResultSetMetaData data = rs.getMetaData();
 

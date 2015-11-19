@@ -38,8 +38,7 @@ public class STIPP_Table {
             sqls = "select stus_id, prodName_ven, venName, price_ven, quantity_ven from "+catTableName+" where "+searchField+" like \'"+codeFieldName+"\'";
 
 
-
-
+        System.out.println("Запрос при заполнении СТИПП: " + sqls);
         ResultSet rs = con.getResultSet(sqls);
         ResultSetMetaData data = rs.getMetaData();
         //==================================read-col-names======================

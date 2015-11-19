@@ -5,7 +5,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
-import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 import mai_n.MySQLConnector;
 
@@ -35,7 +34,7 @@ public class STUS_Table {
     
     public void fillTable(String sql) throws SQLException
     {
-        mainTable = new DefaultTableModel(null, new String[]{"Код товара","Наименование", "Категория"});
+        setMainTable(new DefaultTableModel(null, new String[]{"Код товара","Наименование", "Категория"}));
         ResultSet rs = con.getResultSet(sql);
         ResultSetMetaData data = rs.getMetaData();
         //==================================read-col-names======================
@@ -52,7 +51,7 @@ public class STUS_Table {
             values.add(value);
         }
         
-        mainTable = new DefaultTableModel(values, colNames);
+        setMainTable(new DefaultTableModel(values, colNames));
         //fillColNamesnVendorNames();
         numOfItFound = values.size();
         if(numOfItFound==0)
@@ -64,7 +63,7 @@ public class STUS_Table {
 
     public String getElem(int row, int col)
     {
-        return (String)((Vector)mainTable.getDataVector().elementAt(row)).elementAt(col);
+        return (String)((Vector) getMainTable().getDataVector().elementAt(row)).elementAt(col);
     }
     
     public ArrayList getColNames() throws SQLException
@@ -75,7 +74,7 @@ public class STUS_Table {
     
 
     public DefaultTableModel getMainTab()
-    { return mainTable;}
+    { return getMainTable();}
     
     
     
@@ -134,5 +133,12 @@ public class STUS_Table {
     {return numOfItFound;}
 
 
+    public DefaultTableModel getMainTable() {
+        return mainTable;
+    }
+
+    public void setMainTable(DefaultTableModel mainTable) {
+        this.mainTable = mainTable;
+    }
 }
 

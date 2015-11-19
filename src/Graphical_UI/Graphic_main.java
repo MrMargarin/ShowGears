@@ -6,6 +6,9 @@ import mai_n.MyException;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.RowSorterEvent;
+import javax.swing.event.RowSorterListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -309,18 +312,23 @@ public class Graphic_main extends JFrame{
 
     private void connectAction() {
         String stus_name;
-        switch (datBase.getSelectedIndex()){
-            case 0:
-            stus_name = "stus_baz";
-            case 1:
-            stus_name = "stus_svr";
-            case 2:
-            stus_name = "stus_frz";
-            case 3:
-            stus_name = "stus_izm";
-            default:
-            stus_name = "stus_svr";
+        int choose = datBase.getSelectedIndex();
+        if(choose==0)
+                stus_name = "stus_baz";
+        else if(choose==1)
+                stus_name = "stus_svr";
+        else if(choose==2)
+                stus_name = "stus_frz";
+        else if(choose==3)
+                stus_name = "stus_izm";
+        else {
+                JOptionPane.showMessageDialog(this, "При входе была выбрана не существующая база.\n В данный момент выбрана база сверл.", "Ошибка при выборе базы", WIDTH);
+                stus_name = "stus_svr";
         }
+        System.out.println("stus_name: "+ stus_name);
+
+
+
         try {
             mainThread = new Logic_main(user.getText(), password.getText(), stus_name);
         }
@@ -433,6 +441,7 @@ public class Graphic_main extends JFrame{
                     TableModel model = STUSTable.getModel();
                     if (me.getClickCount() == 2) {
                         if(ProdOrdTable !=null) {
+                            row = table.convertRowIndexToModel(row);
                             Vector ordProd = new Vector();
                             ordProd.add(model.getValueAt(row, 0));
                             ordProd.add(model.getValueAt(row, 1));
@@ -446,6 +455,20 @@ public class Graphic_main extends JFrame{
             });
 
             //==========================Table-STIPP======================================
+
+            //sort event listener=============================================
+            STUSTable.getRowSorter().addRowSorterListener(
+                    new RowSorterListener() {
+
+                        @Override
+                        public void sorterChanged(RowSorterEvent e) {
+                            STUSTable.clearSelection();
+
+                            //STUSTable.
+                            //mainThread.getMainTableMod().setMainTable((DefaultTableModel) STUSTable.getModel());
+                        }
+                    });
+            //value change listener===========================================
             ListSelectionModel selModel = STUSTable.getSelectionModel();
             selModel.addListSelectionListener(new ListSelectionListener() {
                 @Override
@@ -453,8 +476,9 @@ public class Graphic_main extends JFrame{
                     try {
                         int[] selectedRows = STUSTable.getSelectedRows();
                         if(selectedRows.length!=0) {
-                            int selIndex = selectedRows[0];
+                            int selIndex = STUSTable.convertRowIndexToModel(selectedRows[0]);
                             TableModel model = STUSTable.getModel();
+                            System.out.println("value in stus has chang. get new model for stus");
                             Object value = model.getValueAt(selIndex, 0);
 
                             mainThread.mkSTIPP(value.toString());
@@ -537,7 +561,6 @@ public class Graphic_main extends JFrame{
             @Override
             public boolean isCellEditable(int row, int col) {
             switch (col) {
-
                 case 5:
                     return true;
                 default:
@@ -638,6 +661,7 @@ public class Graphic_main extends JFrame{
             } catch (NullPointerException e){}
             atrzPanel.setVisible(true);
             workPanel.removeAll();
+            subPaneWithCategs.removeAll();
             Kategorii.clear();
             workPanel.setVisible(false);
             inputPane.revalidate();
