@@ -8,7 +8,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.RowSorterEvent;
 import javax.swing.event.RowSorterListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -250,11 +249,11 @@ public class Graphic_main extends JFrame{
                 if(answer == JOptionPane.YES_OPTION)
                 {
                     //System.out.println(super.getComponent().getClass().toString());
-                    //System.out.println("before: ordertabSIZE: "+mainThread.getOrderTabMod().getRowCount()+" | row index: "+row);
-                    mainThread.getOrderTabMod().removeRow(ProdOrdTable.getSelectedRow());
+                    //System.out.println("before: ordertabSIZE: "+mainThread.getProdOrder_tab().getRowCount()+" | row index: "+row);
+                    mainThread.getProdOrder_tab().removeRow(ProdOrdTable.getSelectedRow());
 
 
-                    //System.out.println("after: ordertabSIZE: " + mainThread.getOrderTabMod().getRowCount() + " | row index: " + row);
+                    //System.out.println("after: ordertabSIZE: " + mainThread.getProdOrder_tab().getRowCount() + " | row index: " + row);
                 }
             });
         }
@@ -306,11 +305,29 @@ public class Graphic_main extends JFrame{
         managerName = this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 2).toString() + " " + this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 3).toString();
 
         ordNumber = this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 0).toString();
-        mainThread.getOrderTabMod().exportToExcell(managerName, ordNumber);
-        JOptionPane.showMessageDialog(this, "Файл был сохранен в папке "+mainThread.getOrderTabMod().getPath());
+        mainThread.getProdOrder_tab().exportToExcell(managerName, ordNumber);
+        JOptionPane.showMessageDialog(this, "Файл был сохранен в папке "+mainThread.getProdOrder_tab().getPath());
     }
 
     private void connectAction() {
+
+        try {
+            mainThread = new Logic_main(user.getText(), password.getText());
+        }
+        catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Ошибка авторизации", WIDTH);
+        }
+        catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        catch (MyException e2){
+            System.err.println("User Not Found!");
+            System.exit(1);
+        }
+
+
+        if(mainThread.getUser().getType()==1) //sale
+        {
         String stus_name;
         int choose = datBase.getSelectedIndex();
         if(choose==0)
@@ -327,23 +344,7 @@ public class Graphic_main extends JFrame{
         }
         System.out.println("stus_name: "+ stus_name);
 
-
-
-        try {
-            mainThread = new Logic_main(user.getText(), password.getText(), stus_name);
-        }
-        catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Ошибка авторизации", WIDTH);
-        }
-        catch (ClassNotFoundException e1) {
-            e1.printStackTrace();
-        }
-        catch (MyException e2){
-            System.err.println("User Not Found!");
-            System.exit(1);
-        }
-
-
+        mainThread.setStusnStippNames(stus_name);
         try
         {
             mainThread.build_STUSnSTIPP();
@@ -352,8 +353,7 @@ public class Graphic_main extends JFrame{
             e1.printStackTrace();
         }
 
-        if(mainThread.getUser().getType()==1) //sale
-        {
+
             Vector<Vector> vecOFCats = mainThread.getParList().getParamsVector();
             for (Vector vecOFCat : vecOFCats) Kategorii.add(new JComboBox(vecOFCat));
 
@@ -415,15 +415,15 @@ public class Graphic_main extends JFrame{
 
             mainThread.mkSTUSsearch(search.getText(), catFULL);
 
-            if(mainThread.getMainTableMod().getNumOfItFnd()==0) JOptionPane.showMessageDialog(this, "По заданным параметрам не найдено ни одного товара.", "X", WIDTH);
+            if(mainThread.getStus_tab().getNumOfItFnd()==0) JOptionPane.showMessageDialog(this, "По заданным параметрам не найдено ни одного товара.", "X", WIDTH);
 
-            STUSTable = new JTable(mainThread.getMainTableMod().getMainTab()){
+            STUSTable = new JTable(mainThread.getStus_tab().getMainTab()){
                 @Override
                 public boolean isCellEditable(int arg0, int arg1){return false;}};
             //==========================================================
 
             //================Установка Сортировщика====================
-            TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(mainThread.getMainTableMod().getMainTab());
+            TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(mainThread.getStus_tab().getMainTab());
             STUSTable.setRowSorter(sorter1);
             //================Установка Ширины Колонок==================
             STUSTable.getColumnModel().getColumn(0).setPreferredWidth(30);
@@ -448,7 +448,7 @@ public class Graphic_main extends JFrame{
                             ordProd.add(model.getValueAt(row, 2));
                             ordProd.add(new Integer(0));
                             ordProd.add("Удалить");
-                            mainThread.getOrderTabMod().addRow(ordProd);
+                            mainThread.getProdOrder_tab().addRow(ordProd);
                         }
                     }
                 }
@@ -465,7 +465,7 @@ public class Graphic_main extends JFrame{
                             STUSTable.clearSelection();
 
                             //STUSTable.
-                            //mainThread.getMainTableMod().setMainTable((DefaultTableModel) STUSTable.getModel());
+                            //mainThread.getStus_tab().setMainTable((DefaultTableModel) STUSTable.getModel());
                         }
                     });
             //value change listener===========================================
@@ -482,8 +482,8 @@ public class Graphic_main extends JFrame{
                             Object value = model.getValueAt(selIndex, 0);
 
                             mainThread.mkSTIPP(value.toString());
-                            TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(mainThread.getSubTableMod().getSubTab());
-                            STIPPTable = new JTable(mainThread.getSubTableMod().getSubTab());
+                            TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(mainThread.getStipp_tab().getSubTab());
+                            STIPPTable = new JTable(mainThread.getStipp_tab().getSubTab());
                             STIPPTable.setRowSorter(sorter2);
                             STIPPTable.setFillsViewportHeight(true);
                             scPfSTIPPTable = new JScrollPane(STIPPTable);
@@ -522,10 +522,10 @@ public class Graphic_main extends JFrame{
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
-        if (mainThread.getOrderListSaleTabMod().getRowCount() == 0)
+        if (mainThread.getOrderListSale_tab().getRowCount() == 0)
             JOptionPane.showMessageDialog(this, "Заказов нет.", "X", WIDTH);
 
-        OrderListTable = new JTable(mainThread.getOrderListSaleTabMod()) {
+        OrderListTable = new JTable(mainThread.getOrderListSale_tab()) {
             @Override
             public boolean isCellEditable(int row, int col) {return false;}
         };
@@ -534,7 +534,7 @@ public class Graphic_main extends JFrame{
         //==========================================================
 
         //================Установка Сортировщика====================
-        TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(mainThread.getOrderListSaleTabMod());
+        TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(mainThread.getOrderListSale_tab());
         OrderListTable.setRowSorter(sorter1);
 
         scPfOrdLstSaleTable = new JScrollPane(OrderListTable);
@@ -555,9 +555,9 @@ public class Graphic_main extends JFrame{
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
-        if(mainThread.getOrderListTabMod().getRowCount()==0) JOptionPane.showMessageDialog(this, "Заказов нет.", "X", WIDTH);
+        if(mainThread.getOrderListPrch_tab().getRowCount()==0) JOptionPane.showMessageDialog(this, "Заказов нет.", "X", WIDTH);
 
-        OrderListTable = new JTable(mainThread.getOrderListTabMod()){
+        OrderListTable = new JTable(mainThread.getOrderListPrch_tab()){
             @Override
             public boolean isCellEditable(int row, int col) {
             switch (col) {
@@ -574,7 +574,7 @@ public class Graphic_main extends JFrame{
         //==========================================================
 
         //================Установка Сортировщика====================
-        TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(mainThread.getOrderListTabMod());
+        TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(mainThread.getOrderListPrch_tab());
         OrderListTable.setRowSorter(sorter1);
         //================Установка Ширины Колонок==================
 
@@ -586,64 +586,60 @@ public class Graphic_main extends JFrame{
 
         //==========================Table-STIPP======================================
         ListSelectionModel selModel = OrderListTable.getSelectionModel();
-        selModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                try {
-                    int[] selectedRows = OrderListTable.getSelectedRows();
-                    if (selectedRows.length != 0) {
-                        int selIndex = selectedRows[0];
-                        TableModel model = OrderListTable.getModel();
-                        Object value = model.getValueAt(selIndex, 0);
+        selModel.addListSelectionListener(e -> {
+            try {
+                int[] selectedRows = OrderListTable.getSelectedRows();
+                if (selectedRows.length != 0) {
+                    int selIndex = selectedRows[0];
+                    TableModel model = OrderListTable.getModel();
+                    Object codeTrd = model.getValueAt(selIndex, 0);
 
-                        mainThread.mkProdOrderTable((new Integer(value.toString())));
-                        TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(mainThread.getOrderTabMod());
-                        ProdOrdTable = new JTable(mainThread.getOrderTabMod());
-                        ProdOrdTable.setRowSorter(sorter2);
-                        ProdOrdTable.setFillsViewportHeight(true);
-                        scPfPrOrdTable = new JScrollPane(ProdOrdTable);
+                    mainThread.mkProdOrderTable((new Integer(codeTrd.toString())));
+                    TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(mainThread.getProdOrder_tab());
+                    ProdOrdTable = new JTable(mainThread.getProdOrder_tab());
+                    ProdOrdTable.setRowSorter(sorter2);
+                    ProdOrdTable.setFillsViewportHeight(true);
+                    scPfPrOrdTable = new JScrollPane(ProdOrdTable);
 
-                    }
-
-                    //double divider =(double) STUSTable.getRowCount()/((double) STUSTable.getRowCount()+(double) STIPPTable.getRowCount());
-                    stus_stipp_pane.setTopComponent(scPfPrOrdTable);
-                    stus_stipp_pane.setDividerLocation(0.5);
-
-                    //stus_stipp_pane.validate();
-
-                } catch (SQLException ex) {
-                    System.err.println("Error when value changed in OrderListTable");
                 }
 
-                ListSelectionModel selModel2 = ProdOrdTable.getSelectionModel();
-                selModel2.addListSelectionListener(new ListSelectionListener() {
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        int[] selRows = ProdOrdTable.getSelectedRows();
-                        if (selRows.length != 0) {
-                            int selInx = selRows[0];
-                            TableModel model2 = ProdOrdTable.getModel();
-                            Object val = model2.getValueAt(selInx, 0);
-                            try {
-                                mainThread.mkSTIPP(val.toString());
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
+                //double divider =(double) STUSTable.getRowCount()/((double) STUSTable.getRowCount()+(double) STIPPTable.getRowCount());
+                stus_stipp_pane.setTopComponent(scPfPrOrdTable);
+                stus_stipp_pane.setDividerLocation(0.5);
 
-                        TableRowSorter<TableModel> sorter3 = new TableRowSorter<TableModel>(mainThread.getSubTableMod().getSubTab());
-                        STIPPTable = new JTable(mainThread.getSubTableMod().getSubTab());
-                        STIPPTable.setRowSorter(sorter3);
-                        STIPPTable.setFillsViewportHeight(true);
-                        scPfSTIPPTable = new JScrollPane(STIPPTable);
-                        stus_stipp_pane.setBottomComponent(scPfSTIPPTable);
-                        stus_stipp_pane.setDividerLocation(0.5);
-                        //stus_stipp_pane.revalidate();
+                //stus_stipp_pane.validate();
 
-                    }
-                });
+            } catch (SQLException ex) {
+                System.err.println("Error when value changed in OrderListTable");
             }
 
+            ListSelectionModel selModel2 = ProdOrdTable.getSelectionModel();
+            selModel2.addListSelectionListener(new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    int[] selRows = ProdOrdTable.getSelectedRows();
+                    if (selRows.length != 0) {
+                        int selInx = selRows[0];
+                        TableModel model2 = ProdOrdTable.getModel();
+                        Object val = model2.getValueAt(selInx, 0);
+                        try {
+                            mainThread.mkSTIPP(val.toString());
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+
+                    TableRowSorter<TableModel> sorter3 = new TableRowSorter<TableModel>(mainThread.getStipp_tab().getSubTab());
+                    STIPPTable = new JTable(mainThread.getStipp_tab().getSubTab());
+                    STIPPTable.setRowSorter(sorter3);
+                    STIPPTable.setFillsViewportHeight(true);
+                    scPfSTIPPTable = new JScrollPane(STIPPTable);
+                    stus_stipp_pane.setBottomComponent(scPfSTIPPTable);
+                    stus_stipp_pane.setDividerLocation(0.5);
+                    //stus_stipp_pane.revalidate();
+
+                }
+            });
         });
 
     }
@@ -686,8 +682,8 @@ public class Graphic_main extends JFrame{
             JOptionPane.showMessageDialog(this, "Завершите, уже существующий заказ.", "Заказ не завершен!", WIDTH);
         else {
             mainThread.mkOrderTable();
-            sidePane.add(new JLabel("Менеджер: " + mainThread.getUser().getName() + " "+ mainThread.getUser().getSurname() +"                  Номер заказа: " + mainThread.getOrderTabMod().getOrderNumber()), BorderLayout.NORTH);
-            ProdOrdTable = new JTable(mainThread.getOrderTabMod());
+            sidePane.add(new JLabel("Менеджер: " + mainThread.getUser().getName() + " "+ mainThread.getUser().getSurname() +"                  Номер заказа: " + mainThread.getProdOrder_tab().getOrderNumber()), BorderLayout.NORTH);
+            ProdOrdTable = new JTable(mainThread.getProdOrder_tab());
             ProdOrdTable.getColumn("Удалить").setCellRenderer(new ButtonRenderer());
             ProdOrdTable.getColumn("Удалить").setCellEditor(
                     new ButtonEditor(new JCheckBox()));
@@ -700,8 +696,8 @@ public class Graphic_main extends JFrame{
             JButton sendOrder = new JButton("Отправить");
             sendOrder.addActionListener((ActionEvent ev) -> {
 
-                mainThread.getOrderTabMod().setComment(commentTextField.getText());
-                mainThread.getOrderTabMod().exportTable();
+                mainThread.getProdOrder_tab().setComment(commentTextField.getText());
+                mainThread.exportNewOrder();
                 JOptionPane.showMessageDialog(this, "Заказ принят.", "Заказ", WIDTH);
                 canOrderAction();
                 global_split_pane.setTopComponent(null);

@@ -22,8 +22,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 
 public class ProdOrderTable extends DefaultTableModel{
-    private static final String[] colNames = {"Код товара", "Наименование", "Категория", "Поставщик", "Количество", "Удалить"};
+    //private static final String[] colNames = {"Код товара", "Наименование", "Категория", "Поставщик", "Количество", "Удалить"};
     //private static final String[] colNamesWrem = {"Код товара", "Наименование", "Категория", "Количество"};
+    private static final String[] colNames = {"Код товара", "Наименование", "Категория", "Количество", "Удалить"};
     private final String orderProdsNameTable = "orderlist_table";
     private final String orderTable = "order_table";
     private final String rowCountSQL = "select count(*) from order_table";
@@ -88,11 +89,15 @@ public class ProdOrderTable extends DefaultTableModel{
 
     }
 
-    public void fillTable(int orderCode, String stusName) throws SQLException {   //table for PM, like SM's STUS  _PM
+    public void fillTable(int orderCode) throws SQLException {   //table for PM, like SM's STUS  _PM
 
+        String sql = "select order_table.baseName from order_table where order_table.id = "+orderCode;
+        ResultSet rs = this.con.getResultSet(sql);
+
+        String stusName = rs.getString(0);
         String stippName = "stipp_"+stusName.substring(5);
 
-        String sql = "SELECT "+stusName+".id, " +
+        /*String sql = "SELECT "+stusName+".id, " +
                 stusName+".prodName, " +
                 stusName+".catName, " +
                 stippName+".venName, " +
@@ -101,8 +106,18 @@ public class ProdOrderTable extends DefaultTableModel{
                 "INNER JOIN "+stusName+" ON "+stusName+".id = orderlist_table.stus_id " +
                 "INNER JOIN "+stippName+" ON "+stusName+".id = "+stippName+".stus_id " +
                 "where orderlist_table.order_id like '"+orderCode+"'";
-        System.out.println("Запрос из ProdOrderTable.fillTable: " +sql);
-        ResultSet rs = this.con.getResultSet(sql);
+        */
+        sql = "SELECT "+stusName+".id, " +
+                stusName+".prodName, " +
+                stusName+".catName, " +
+                "orderlist_table.quantity_req " +
+                "vendor.purchManagerName"+
+                "FROM orderlist_table " +
+                "INNER JOIN "+stusName+" ON "+stusName+".id = orderlist_table.stus_id " +
+                "INNER JOIN vendor ON vendor.id = orderlist_table.ven_id" +
+                "where orderlist_table.order_id like '"+orderCode+"'";
+        System.out.println("заполнение таблицы товаров от заказа==Запрос из ProdOrderTable.fillTable: " +sql);
+        rs = this.con.getResultSet(sql);
         ResultSetMetaData data = rs.getMetaData();
 
         Vector<Vector<Object>> values = new Vector<>();
@@ -128,7 +143,7 @@ public class ProdOrderTable extends DefaultTableModel{
 
     public int getOrderNumber() {return orderNumber;}
     
-    public void exportTable()
+    public void exportTable(String stusName, String stippName)
     {
 /*
         String sql ="insert into "+orderTable+
@@ -152,7 +167,7 @@ public class ProdOrderTable extends DefaultTableModel{
         try {
         for(int i = 0; i < this.getRowCount(); i++)
         {
-            exportOrderedProduct(this.getValueAt(i, 0), this.getValueAt(i, 3));
+            exportOrderedProduct(this.getValueAt(i, 0), this.getValueAt(i, 3), stusName);
         }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Недостаточно прав у вашего пользоателя", e.getMessage(), JOptionPane.INFORMATION_MESSAGE);
@@ -161,10 +176,10 @@ public class ProdOrderTable extends DefaultTableModel{
 
     }
 
-    private void exportOrderedProduct(Object prod_id, Object quantity) throws SQLException {
+    private void exportOrderedProduct(Object prod_id, Object quantity, String baseName) throws SQLException {
 
-        String sql = "insert into "+orderProdsNameTable+" (`order_id`, `stus_id`, `quantity_req`)  values ('"+orderNumber+"', '"+prod_id+"', '"+quantity+"');";
-        System.out.println("sql: "+sql);
+        String sql = "insert into "+orderProdsNameTable+" (`order_id`, `stus_id`, `quantity_req`, `stusName`)  values ('"+orderNumber+"', '"+prod_id+"', '"+quantity+"', '"+baseName+"');";
+        System.out.println("sql adding new order: "+sql);
 
             con.execSQL(sql); //insert orders
 

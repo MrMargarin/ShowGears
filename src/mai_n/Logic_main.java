@@ -16,14 +16,14 @@ public class Logic_main {
     private final String paramName = "CatName"; //�������� ��������� �� �������� ����� ������������ �����
      //�������� �������, ��� �������� �������� ��������� �� �������� ����� ������������ �����
 
-    private String paramTableName;
+    private String stusTName;
     private String stippTName;
 
-    private STUS_Table mainTableMod;
-    private STIPP_Table subTableMod;
-    private ProdOrderTable orderTabMod;     //������ ������
-    private OrderListTable orderListTabMod;
-    private OrderListTable orderListSaleTabMod;
+    private STUS_Table stus_tab;
+    private STIPP_Table stipp_tab;
+    private ProdOrderTable prodOrder_tab;     //������ ������
+    private OrderListTable orderListPrch_tab;
+    private OrderListTable orderListSale_tab;
 
     private User user;
 
@@ -39,19 +39,33 @@ public class Logic_main {
     private ParamList parList;
 
     public Logic_main(String usm, String pss, String datBase) throws SQLException, ClassNotFoundException, MyException {
-        paramTableName = datBase;
-        stippTName = "stipp_"+datBase.substring(5);
+        setStusTName(datBase);
+        setStippTName("stipp_"+datBase.substring(5));
         setConnector(new MySQLConnector(urlToDB, usm, pss));
         setUserName(usm); //init user current name
         setUser(new User(usm, this.connector));
     }
 
+    public Logic_main(String usm, String pss) throws SQLException, ClassNotFoundException, MyException {
+        setStusTName(null);
+        setStippTName(null);
+        setConnector(new MySQLConnector(urlToDB, usm, pss));
+        setUserName(usm); //init user current name
+        setUser(new User(usm, this.connector));
+    }
+
+    public void setStusnStippNames(String datBase)
+    {
+        setStusTName(datBase);
+        setStippTName("stipp_"+datBase.substring(5));
+    }
+
     public void build_STUSnSTIPP() throws SQLException {
 
-            setMainTableMod(new STUS_Table(getConnector()));
-            setSubTableMod(new STIPP_Table(getConnector()));
+            setStus_tab(new STUS_Table(getConnector()));
+            setStipp_tab(new STIPP_Table(getConnector()));
 
-            setParList(new ParamList(paramName, paramTableName, this.connector));
+            setParList(new ParamList(paramName, getStusTName(), this.connector));
             getParList().ParamListSeparate();
             setCats(getParList());
     }
@@ -60,10 +74,10 @@ public class Logic_main {
 
     public void build_Order_Tables() throws SQLException {
         if(user.getType()==2){
-        setOrderListTabMod(new OrderListTable(getConnector()));
-        setOrderTabMod(new ProdOrderTable(getConnector()));}
+        setOrderListPrch_tab(new OrderListTable(getConnector()));
+        setProdOrder_tab(new ProdOrderTable(getConnector()));}
         else{
-            setOrderListSaleTabMod(new OrderListTable(getConnector()));
+            setOrderListSale_tab(new OrderListTable(getConnector()));
         }
 
 
@@ -76,28 +90,33 @@ public class Logic_main {
     public ParamList getCats()
     {return cats;}
 
-    public STUS_Table getMainTableMod() {
-        return mainTableMod;
+    public STUS_Table getStus_tab() {
+        return stus_tab;
     }
 
-    public void setMainTableMod(STUS_Table mainTableMod) {
-        this.mainTableMod = mainTableMod;
+    public void setStus_tab(STUS_Table stus_tab) {
+        this.stus_tab = stus_tab;
     }
 
-    public STIPP_Table getSubTableMod() {
-        return subTableMod;
+    public STIPP_Table getStipp_tab() {
+        return stipp_tab;
     }
 
-    public void setSubTableMod(STIPP_Table subTableMod) {
-        this.subTableMod = subTableMod;
+    public void setStipp_tab(STIPP_Table stipp_tab) {
+        this.stipp_tab = stipp_tab;
     }
 
-    public ProdOrderTable getOrderTabMod() {
-        return orderTabMod;
+    public ProdOrderTable getProdOrder_tab() {
+        return prodOrder_tab;
     }
 
-    public void setOrderTabMod(ProdOrderTable orderTabMod) {
-        this.orderTabMod = orderTabMod;
+    public void exportNewOrder()
+    {
+        prodOrder_tab.exportTable(stusTName, stippTName);
+    }
+
+    public void setProdOrder_tab(ProdOrderTable prodOrder_tab) {
+        this.prodOrder_tab = prodOrder_tab;
     }
 
     public String getUserName() {
@@ -128,40 +147,40 @@ public class Logic_main {
     public void mkSTUSsearch(String search, Object categ) throws SQLException {
 
 
-        srch = "select * from "+paramTableName+" where "+namField+" like \'%" + search + "%\' and CatName like \'"+categ+"\'";
+        srch = "select * from "+ getStusTName() +" where "+namField+" like \'%" + search + "%\' and CatName like \'"+categ+"\'";
 
-        System.out.println(srch);
-        mainTableMod.fillTable(srch);
+        //System.out.println(srch);
+        stus_tab.fillTable(srch);
     }
 
     public void mkSTIPP(String productCode) throws SQLException {
 
-        subTableMod.fillTable(productCode, user.getType(), stippTName);
+        stipp_tab.fillTable(productCode, user.getType(), getStippTName());
     }
 
     public void mkOrderTable()
     {
-        orderTabMod = new ProdOrderTable(connector, userName);
+        prodOrder_tab = new ProdOrderTable(connector, userName);
     }
 
     public void mkProdOrderTable(int code) throws SQLException {
-        orderTabMod.fillTable(code, paramTableName);
+        prodOrder_tab.fillTable(code);
     }
 
 
     public void mkOrderListTable() throws SQLException {
-        if(user.getType()==2)  orderListTabMod.fillTable();
+        if(user.getType()==2)  orderListPrch_tab.fillTable();
         else {
-            orderListSaleTabMod.fillTableSale(userName);
+            orderListSale_tab.fillTableSale(userName);
         }
     }
 
-    public OrderListTable getOrderListTabMod() {
-        return orderListTabMod;
+    public OrderListTable getOrderListPrch_tab() {
+        return orderListPrch_tab;
     }
 
-    public void setOrderListTabMod(OrderListTable orderListTabMod) {
-        this.orderListTabMod = orderListTabMod;
+    public void setOrderListPrch_tab(OrderListTable orderListPrch_tab) {
+        this.orderListPrch_tab = orderListPrch_tab;
     }
 
 
@@ -182,11 +201,27 @@ public class Logic_main {
         this.parList = parList;
     }
 
-    public OrderListTable getOrderListSaleTabMod() {
-        return orderListSaleTabMod;
+    public OrderListTable getOrderListSale_tab() {
+        return orderListSale_tab;
     }
 
-    public void setOrderListSaleTabMod(OrderListTable orderListSaleTabMod) {
-        this.orderListSaleTabMod = orderListSaleTabMod;
+    public void setOrderListSale_tab(OrderListTable orderListSale_tab) {
+        this.orderListSale_tab = orderListSale_tab;
+    }
+
+    public String getStusTName() {
+        return stusTName;
+    }
+
+    public void setStusTName(String stusTName) {
+        this.stusTName = stusTName;
+    }
+
+    public String getStippTName() {
+        return stippTName;
+    }
+
+    public void setStippTName(String stippTName) {
+        this.stippTName = stippTName;
     }
 }
