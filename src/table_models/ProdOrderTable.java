@@ -42,16 +42,16 @@ public class ProdOrderTable extends DefaultTableModel{
     public ProdOrderTable(MySQLConnector con)
     {
         super((Object[][]) null, null);
-        this.con = con;
+        this.setCon(con);
     }
 
     public ProdOrderTable(MySQLConnector con, int orderCode) throws SQLException { //конструктор для ....
         super((Object[][]) null, null);
-        this.con = con;
+        this.setCon(con);
         String sql = "SELECT stus_table.id, stus_table.prodName, stus_table.catName, orderlist_table.quantity_req " +
                 "FROM orderlist_table " +
                 "INNER JOIN stus_table ON stus_table.id = orderlist_table.stus_id where orderlist_table.order_id like '"+orderCode+"'";
-        ResultSet rs = this.con.getResultSet(sql);
+        ResultSet rs = this.getCon().getResultSet(sql);
         ResultSetMetaData data = rs.getMetaData();
 
         Vector<Vector<Object>> values = new Vector<>();
@@ -72,7 +72,7 @@ public class ProdOrderTable extends DefaultTableModel{
 
     public ProdOrderTable(MySQLConnector con, String managerName) { //конструктор для заполнения заказа _SM
         super(null, colNames);
-        this.con = con;
+        this.setCon(con);
         this.managerName = managerName;
 
 
@@ -89,13 +89,25 @@ public class ProdOrderTable extends DefaultTableModel{
 
     }
 
-    public void fillTable(int orderCode) throws SQLException {   //table for PM, like SM's STUS  _PM
+    public static String getStippByOrderNumber(int orCode, MySQLConnector con) throws SQLException {
+        String sql = "select order_table.baseName from order_table where order_table.id = " + orCode;
+        ResultSet rs = con.getResultSet(sql);
+        String stusName, stippName;
+        rs.next();
+        stusName = rs.getString(1);
+        stippName = "stipp_" + stusName.substring(5);
+        return stippName;
+    }
 
-        String sql = "select order_table.baseName from order_table where order_table.id = "+orderCode;
-        ResultSet rs = this.con.getResultSet(sql);
+    public String fillTable(int orderCode) throws SQLException {   //table for PM, like SM's STUS  _PM
 
-        String stusName = rs.getString(0);
-        String stippName = "stipp_"+stusName.substring(5);
+        String sql = "select order_table.baseName from order_table where order_table.id = " + orderCode;
+        ResultSet rs = this.getCon().getResultSet(sql);
+        String stusName, stippName = null;
+        try {
+            rs.next();
+            stusName = rs.getString(1);
+            stippName = "stipp_" + stusName.substring(5);
 
         /*String sql = "SELECT "+stusName+".id, " +
                 stusName+".prodName, " +
@@ -110,14 +122,20 @@ public class ProdOrderTable extends DefaultTableModel{
         sql = "SELECT "+stusName+".id, " +
                 stusName+".prodName, " +
                 stusName+".catName, " +
-                "orderlist_table.quantity_req " +
-                "vendor.purchManagerName"+
+                "orderlist_table.quantity_req, " +
+                "vendor.purchManagerName "+
                 "FROM orderlist_table " +
                 "INNER JOIN "+stusName+" ON "+stusName+".id = orderlist_table.stus_id " +
-                "INNER JOIN vendor ON vendor.id = orderlist_table.ven_id" +
+                "INNER JOIN vendor ON vendor.id = orderlist_table.ven_id " +
                 "where orderlist_table.order_id like '"+orderCode+"'";
         System.out.println("заполнение таблицы товаров от заказа==Запрос из ProdOrderTable.fillTable: " +sql);
-        rs = this.con.getResultSet(sql);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        rs = this.getCon().getResultSet(sql);
         ResultSetMetaData data = rs.getMetaData();
 
         Vector<Vector<Object>> values = new Vector<>();
@@ -126,7 +144,7 @@ public class ProdOrderTable extends DefaultTableModel{
         while (rs.next()) {
             Vector<Object> value = new Vector<>();
             for (int i = 1; i <= maxColumns; i++)
-                value.add(con.getResultSet().getObject(i));
+                value.add(getCon().getResultSet().getObject(i));
             values.add(value);
         }
 
@@ -135,8 +153,9 @@ public class ProdOrderTable extends DefaultTableModel{
         colNamesVec.add(colNames[1]);
         colNamesVec.add(colNames[2]);
         colNamesVec.add(colNames[3]);
-        colNamesVec.add(colNames[4]);
+        colNamesVec.add("Поставщик");
         this.setDataVector(values, colNamesVec);
+        return stippName;
     }
 
     public int getOrderRowCount() {return orderRowCount;}
@@ -160,7 +179,7 @@ public class ProdOrderTable extends DefaultTableModel{
 
 
         try {
-            con.execSQL(sql); //insert order
+            getCon().execSQL(sql); //insert order
         } catch (SQLException e) {
             //
         }
@@ -181,7 +200,7 @@ public class ProdOrderTable extends DefaultTableModel{
         String sql = "insert into "+orderProdsNameTable+" (`order_id`, `stus_id`, `quantity_req`, `stusName`)  values ('"+orderNumber+"', '"+prod_id+"', '"+quantity+"', '"+baseName+"');";
         System.out.println("sql adding new order: "+sql);
 
-            con.execSQL(sql); //insert orders
+            getCon().execSQL(sql); //insert orders
 
     }
 
@@ -226,5 +245,13 @@ public class ProdOrderTable extends DefaultTableModel{
 
     public String getPath() {
         return path;
+    }
+
+    public MySQLConnector getCon() {
+        return con;
+    }
+
+    public void setCon(MySQLConnector con) {
+        this.con = con;
     }
 }

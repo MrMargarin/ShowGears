@@ -2,6 +2,7 @@ package Graphical_UI;
 
 import mai_n.Logic_main;
 import mai_n.MyException;
+import table_models.STIPP_Table;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -306,7 +307,7 @@ public class Graphic_main extends JFrame{
 
         ordNumber = this.OrderListTable.getValueAt(this.OrderListTable.getSelectedRow(), 0).toString();
         mainThread.getProdOrder_tab().exportToExcell(managerName, ordNumber);
-        JOptionPane.showMessageDialog(this, "Файл был сохранен в папке "+mainThread.getProdOrder_tab().getPath());
+        JOptionPane.showMessageDialog(this, "Файл был сохранен в папке " + mainThread.getProdOrder_tab().getPath());
     }
 
     private void connectAction() {
@@ -379,6 +380,7 @@ public class Graphic_main extends JFrame{
         else if(mainThread.getUser().getType()==2) //prch
         {
 
+            //mainThread.setStipp_tab(new STIPP_Table(mainThread.getConnector()));
 
             workPanel.add(showOrders);
             workPanel.add(exportOrders);
@@ -480,7 +482,6 @@ public class Graphic_main extends JFrame{
                             TableModel model = STUSTable.getModel();
                             System.out.println("value in stus has chang. get new model for stus");
                             Object value = model.getValueAt(selIndex, 0);
-
                             mainThread.mkSTIPP(value.toString());
                             TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(mainThread.getStipp_tab().getSubTab());
                             STIPPTable = new JTable(mainThread.getStipp_tab().getSubTab());
@@ -494,7 +495,7 @@ public class Graphic_main extends JFrame{
                         stus_stipp_pane.setDividerLocation(0.5);
                         //stus_stipp_pane.revalidate();
 
-                    } catch (SQLException ex) {
+                    } catch (Exception ex) {
 
                         Logger.getLogger(Graphic_main.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -586,60 +587,64 @@ public class Graphic_main extends JFrame{
 
         //==========================Table-STIPP======================================
         ListSelectionModel selModel = OrderListTable.getSelectionModel();
-        selModel.addListSelectionListener(e -> {
-            try {
-                int[] selectedRows = OrderListTable.getSelectedRows();
-                if (selectedRows.length != 0) {
-                    int selIndex = selectedRows[0];
-                    TableModel model = OrderListTable.getModel();
-                    Object codeTrd = model.getValueAt(selIndex, 0);
+        selModel.addListSelectionListener(new ListSelectionListener() {
+            @Override//
+            public void valueChanged(ListSelectionEvent e) {
+                try {
+                    int[] selectedRows = OrderListTable.getSelectedRows();
+                    if (selectedRows.length != 0) {
+                        int selIndex = selectedRows[0];
+                        TableModel model = OrderListTable.getModel();
+                        Object codeTrd = model.getValueAt(selIndex, 0);
+                        int code = new Integer(codeTrd.toString());
 
-                    mainThread.mkProdOrderTable((new Integer(codeTrd.toString())));
-                    TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(mainThread.getProdOrder_tab());
-                    ProdOrdTable = new JTable(mainThread.getProdOrder_tab());
-                    ProdOrdTable.setRowSorter(sorter2);
-                    ProdOrdTable.setFillsViewportHeight(true);
-                    scPfPrOrdTable = new JScrollPane(ProdOrdTable);
+                        mainThread.mkProdOrderTable(code);
+                        TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(mainThread.getProdOrder_tab());
+                        ProdOrdTable = new JTable(mainThread.getProdOrder_tab());
+                        ProdOrdTable.setRowSorter(sorter2);
+                        ProdOrdTable.setFillsViewportHeight(true);
+                        scPfPrOrdTable = new JScrollPane(ProdOrdTable);
 
-                }
-
-                //double divider =(double) STUSTable.getRowCount()/((double) STUSTable.getRowCount()+(double) STIPPTable.getRowCount());
-                stus_stipp_pane.setTopComponent(scPfPrOrdTable);
-                stus_stipp_pane.setDividerLocation(0.5);
-
-                //stus_stipp_pane.validate();
-
-            } catch (SQLException ex) {
-                System.err.println("Error when value changed in OrderListTable");
-            }
-
-            ListSelectionModel selModel2 = ProdOrdTable.getSelectionModel();
-            selModel2.addListSelectionListener(new ListSelectionListener() {
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    int[] selRows = ProdOrdTable.getSelectedRows();
-                    if (selRows.length != 0) {
-                        int selInx = selRows[0];
-                        TableModel model2 = ProdOrdTable.getModel();
-                        Object val = model2.getValueAt(selInx, 0);
-                        try {
-                            mainThread.mkSTIPP(val.toString());
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
                     }
 
-                    TableRowSorter<TableModel> sorter3 = new TableRowSorter<TableModel>(mainThread.getStipp_tab().getSubTab());
-                    STIPPTable = new JTable(mainThread.getStipp_tab().getSubTab());
-                    STIPPTable.setRowSorter(sorter3);
-                    STIPPTable.setFillsViewportHeight(true);
-                    scPfSTIPPTable = new JScrollPane(STIPPTable);
-                    stus_stipp_pane.setBottomComponent(scPfSTIPPTable);
+                    //double divider =(double) STUSTable.getRowCount()/((double) STUSTable.getRowCount()+(double) STIPPTable.getRowCount());
+                    stus_stipp_pane.setTopComponent(scPfPrOrdTable);
                     stus_stipp_pane.setDividerLocation(0.5);
-                    //stus_stipp_pane.revalidate();
 
+                    //stus_stipp_pane.validate();
+
+                } catch (SQLException ex) {
+                    System.err.println("Error when value changed in OrderListTable");
                 }
-            });
+
+                ListSelectionModel selModel2 = ProdOrdTable.getSelectionModel();
+                selModel2.addListSelectionListener(new ListSelectionListener() {
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        int[] selRows = ProdOrdTable.getSelectedRows();
+                        if (selRows.length != 0) {
+                            int selInx = selRows[0];
+                            TableModel model2 = ProdOrdTable.getModel();
+                            Object val = model2.getValueAt(selInx, 0);
+                            try {
+                                mainThread.mkSTIPP(val.toString());
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        TableRowSorter<TableModel> sorter3 = new TableRowSorter<TableModel>(mainThread.getStipp_tab().getSubTab());
+                        STIPPTable = new JTable(mainThread.getStipp_tab().getSubTab());
+                        STIPPTable.setRowSorter(sorter3);
+                        STIPPTable.setFillsViewportHeight(true);
+                        scPfSTIPPTable = new JScrollPane(STIPPTable);
+                        stus_stipp_pane.setBottomComponent(scPfSTIPPTable);
+                        stus_stipp_pane.setDividerLocation(0.5);
+                        //stus_stipp_pane.revalidate();
+
+                    }
+                });
+            }
         });
 
     }

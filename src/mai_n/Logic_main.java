@@ -18,6 +18,7 @@ public class Logic_main {
 
     private String stusTName;
     private String stippTName;
+    private String stippFromOrder;
 
     private STUS_Table stus_tab;
     private STIPP_Table stipp_tab;
@@ -57,7 +58,7 @@ public class Logic_main {
     public void setStusnStippNames(String datBase)
     {
         setStusTName(datBase);
-        setStippTName("stipp_"+datBase.substring(5));
+        setStippTName("stipp_" + datBase.substring(5));
     }
 
     public void build_STUSnSTIPP() throws SQLException {
@@ -154,8 +155,14 @@ public class Logic_main {
     }
 
     public void mkSTIPP(String productCode) throws SQLException {
-
-        stipp_tab.fillTable(productCode, user.getType(), getStippTName());
+        if(user.getType()==1)
+            stipp_tab.fillTable(productCode, 1, getStippTName());
+        if(user.getType()==2){
+            setStipp_tab(new STIPP_Table(getConnector()));
+            stipp_tab.fillTable(productCode,2,stippFromOrder);}
+        else{
+            System.out.println("Не определен тип пользователя в mkSTIPP(productCode)");
+        }
     }
 
     public void mkOrderTable()
@@ -164,7 +171,7 @@ public class Logic_main {
     }
 
     public void mkProdOrderTable(int code) throws SQLException {
-        prodOrder_tab.fillTable(code);
+        stippFromOrder = prodOrder_tab.fillTable(code);
     }
 
 
@@ -215,6 +222,7 @@ public class Logic_main {
 
     public void setStusTName(String stusTName) {
         this.stusTName = stusTName;
+        if(stusTName!=null)stippTName = "stipp_" + stusTName.substring(5);
     }
 
     public String getStippTName() {
@@ -223,5 +231,13 @@ public class Logic_main {
 
     public void setStippTName(String stippTName) {
         this.stippTName = stippTName;
+    }
+
+    public String getStippFromOrder() {
+        return stippFromOrder;
+    }
+
+    public void setStippFromOrder(String stippFromOrder) {
+        this.stippFromOrder = stippFromOrder;
     }
 }
