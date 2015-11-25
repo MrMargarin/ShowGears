@@ -155,13 +155,17 @@ public class Logic_main {
     }
 
     public void mkSTIPP(String productCode) throws SQLException {
-        if(user.getType()==1)
+        int t = user.getType();
+        if(t==1) {
             stipp_tab.fillTable(productCode, 1, getStippTName());
-        if(user.getType()==2){
+        }
+        else if(t==2){
             setStipp_tab(new STIPP_Table(getConnector()));
-            stipp_tab.fillTable(productCode,2,stippFromOrder);}
+            stipp_tab.fillTable(productCode,2,stippFromOrder);
+        }
+
         else{
-            System.out.println("Не определен тип пользователя в mkSTIPP(productCode)");
+            System.out.println("==============Не определен тип пользователя в mkSTIPP(productCode)\nНеизвестный тип пользователя: "+t);
         }
     }
 
@@ -171,7 +175,7 @@ public class Logic_main {
     }
 
     public void mkProdOrderTable(int code) throws SQLException {
-        stippFromOrder = prodOrder_tab.fillTable(code);
+        stippFromOrder = prodOrder_tab.fillTableForPRCH(code);
     }
 
 

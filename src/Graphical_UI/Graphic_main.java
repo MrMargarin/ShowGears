@@ -14,6 +14,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigInteger;
 import java.sql.SQLException;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class Graphic_main extends JFrame{
         datBase = new JComboBox(bases);
         search = new JTextField("72", 10); //-----------------search field
         login = new JLabel("Пользователь");
-        user = new JTextField("sale", 4);
+        user = new JTextField("prch", 4);
         pass = new JLabel("Пароль:");
         password = new JPasswordField("pool",7);
     //==============================================================================
@@ -117,11 +118,6 @@ public class Graphic_main extends JFrame{
             global_split_pane.revalidate();
 
         });
-
-
-
-
-
 
     //====================================="Show Order"=============================
         showOrders = new JButton("Показать Заказы");
@@ -160,6 +156,7 @@ public class Graphic_main extends JFrame{
             atrzPanel.add(pass);
             atrzPanel.add(password);
             atrzPanel.add(datBase);
+            datBase.setVisible(false);
             atrzPanel.add(connect);
 
 
@@ -480,7 +477,7 @@ public class Graphic_main extends JFrame{
                         if(selectedRows.length!=0) {
                             int selIndex = STUSTable.convertRowIndexToModel(selectedRows[0]);
                             TableModel model = STUSTable.getModel();
-                            System.out.println("value in stus has chang. get new model for stus");
+                            //System.out.println("value in stus has chang. get new model for stus");
                             Object value = model.getValueAt(selIndex, 0);
                             mainThread.mkSTIPP(value.toString());
                             TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(mainThread.getStipp_tab().getSubTab());
@@ -625,18 +622,68 @@ public class Graphic_main extends JFrame{
                         if (selRows.length != 0) {
                             int selInx = selRows[0];
                             TableModel model2 = ProdOrdTable.getModel();
-                            Object val = model2.getValueAt(selInx, 0);
+                            Object val = model2.getValueAt(selInx, 1);
                             try {
                                 mainThread.mkSTIPP(val.toString());
                             } catch (SQLException e1) {
                                 e1.printStackTrace();
                             }
-                        }
 
-                        TableRowSorter<TableModel> sorter3 = new TableRowSorter<TableModel>(mainThread.getStipp_tab().getSubTab());
-                        STIPPTable = new JTable(mainThread.getStipp_tab().getSubTab());
-                        STIPPTable.setRowSorter(sorter3);
-                        STIPPTable.setFillsViewportHeight(true);
+
+                            TableRowSorter<TableModel> sorter3 = new TableRowSorter<TableModel>(mainThread.getStipp_tab().getSubTab());
+                            STIPPTable = new JTable(mainThread.getStipp_tab().getSubTab());
+
+                            //STIPPTable.getSelectedRow()
+
+                            STIPPTable.setRowSorter(sorter3);
+                            STIPPTable.setFillsViewportHeight(true);
+                        }
+                        //===========================================================================
+                        /*ListSelectionModel selModelSTIPP = STIPPTable.getSelectionModel();
+                        selModelSTIPP.addListSelectionListener(new ListSelectionListener() {
+                            @Override
+                            public void valueChanged(ListSelectionEvent e) {
+
+                            }
+                        });*/
+
+
+                        STIPPTable.addMouseListener(new MouseAdapter() {
+                            public void mousePressed(MouseEvent me) {
+                                JTable table = (JTable) me.getSource();
+                                Point p = me.getPoint();
+                                int row = table.rowAtPoint(p);
+                                TableModel model = STIPPTable.getModel();
+                                if (me.getClickCount() == 2) {
+                                    if (ProdOrdTable != null) {
+                                        row = table.convertRowIndexToModel(row);
+                                        //Vector ordProd = new Vector();
+                                        //ordProd.add(model.getValueAt(row, 2));
+                                        //ordProd.add(model.getValueAt(row, 3));
+                                        Long code = (Long) ProdOrdTable.getValueAt(ProdOrdTable.getSelectedRow(), 0);
+                                        String ven, price;
+                                        ven = (String) model.getValueAt(row, 2); price = (String) model.getValueAt(row, 3);
+                                        ProdOrdTable.setValueAt(ven, ProdOrdTable.getSelectedRow(), 5);
+                                        ProdOrdTable.setValueAt(price, ProdOrdTable.getSelectedRow(), 6);
+                                        try {
+                                            mainThread.getProdOrder_tab().appointVendorToCommPos(code, ven, price);
+                                        } catch (SQLException e1) {
+                                            System.out.println("Ошибка при назначении поставщика для товарной позиции.");
+                                            e1.printStackTrace();
+                                        }
+
+                                        //mainThread.getProdOrder_tab().addRow(ordProd);
+                                    }
+                                }
+                            }
+                        });
+
+
+
+
+
+
+
                         scPfSTIPPTable = new JScrollPane(STIPPTable);
                         stus_stipp_pane.setBottomComponent(scPfSTIPPTable);
                         stus_stipp_pane.setDividerLocation(0.5);
