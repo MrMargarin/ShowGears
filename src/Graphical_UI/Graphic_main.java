@@ -49,23 +49,28 @@ public class Graphic_main extends JFrame{
     private JScrollPane scPfSTUSTable, scPfSTIPPTable, scPfPrOrdTable, scPfOrdLstTable, scPfOrdLstSaleTable; //   "scPf" - scroll panel for
 
     private Logic_main mainThread;
+    private String catFull;
+
 
     public Graphic_main() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        this.setTitle("MetallGearsViewer");
-        this.setSize(1300, 700);
-        this.setLocationRelativeTo(null);
-        this.setResizable(true);
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                try {
-                    if (mainThread != null) mainThread.disconnect();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Graphic_main.class.getName()).log(Level.SEVERE, null, ex);
+
+    this.setTitle("MetallGearsViewer");
+    this.setSize(1300, 700);
+    this.setLocationRelativeTo(null);
+    this.setResizable(true);
+
+    this.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            try {
+                if (mainThread != null) mainThread.disconnect();
                 }
-            }
-        });
+            catch (SQLException ex) {
+                Logger.getLogger(Graphic_main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
+    });
 
         stus_stipp_pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true);
         global_split_pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
@@ -73,8 +78,7 @@ public class Graphic_main extends JFrame{
         inputPane = new JPanel();
         atrzPanel = new JPanel();
         workPanel = new JPanel();
-        subPaneWithCategs = new JPanel();
-        subPaneWithCategs.setLayout(new BoxLayout(subPaneWithCategs, BoxLayout.Y_AXIS));
+
         sidePane = new JPanel(new BorderLayout());
         rightPane = new JPanel(new BorderLayout());
 
@@ -83,7 +87,7 @@ public class Graphic_main extends JFrame{
         datBase = new JComboBox(bases);
         search = new JTextField("72", 10); //-----------------search field
         login = new JLabel("Пользователь");
-        user = new JTextField("prch", 4);
+        user = new JTextField("sale", 4);
         pass = new JLabel("Пароль:");
         password = new JPasswordField("pool",7);
     //==============================================================================
@@ -91,14 +95,7 @@ public class Graphic_main extends JFrame{
         connect = new JButton("Войти");
         connect.addActionListener((ActionEvent e) -> connectAction());
     //====================================="Show"===================================
-        show = new JButton("Искать");
-        show.addActionListener((ActionEvent e) -> {
-            searchAction();
-            global_split_pane.setBottomComponent(stus_stipp_pane);
-            global_split_pane.revalidate();
-        });
-
-
+        //to the sale script has moved
 
         //====================================="Show OrderSale"=============================
         showOrdersS = new JButton("Показать Заказы");
@@ -156,7 +153,7 @@ public class Graphic_main extends JFrame{
             atrzPanel.add(pass);
             atrzPanel.add(password);
             atrzPanel.add(datBase);
-            datBase.setVisible(false);
+            //datBase.setVisible(false);
             atrzPanel.add(connect);
 
 
@@ -322,8 +319,7 @@ public class Graphic_main extends JFrame{
             System.err.println("User Not Found!");
             System.exit(1);
         }
-
-
+    //===================================================================================================
         if(mainThread.getUser().getType()==1) //sale
         {
         String stus_name;
@@ -340,7 +336,7 @@ public class Graphic_main extends JFrame{
                 JOptionPane.showMessageDialog(this, "При входе была выбрана не существующая база.\n В данный момент выбрана база сверл.", "Ошибка при выборе базы", WIDTH);
                 stus_name = "stus_svr";
         }
-        System.out.println("stus_name: "+ stus_name);
+        System.out.println("stus_name: " + stus_name);
 
         mainThread.setStusnStippNames(stus_name);
         try
@@ -352,18 +348,68 @@ public class Graphic_main extends JFrame{
         }
 
 
-            Vector<Vector> vecOFCats = mainThread.getParList().getParamsVector();
-            for (Vector vecOFCat : vecOFCats) Kategorii.add(new JComboBox(vecOFCat));
+        show = new JButton("Искать");
+        show.addActionListener((ActionEvent e) -> {
+            searchAction(catFull);
+            global_split_pane.setBottomComponent(stus_stipp_pane);
+            global_split_pane.revalidate();
+        });
 
 
+        ActionListener combbCatsLsnr = e -> {
+            JComboBox cb = (JComboBox)e.getSource();
+
+
+            int arLsCmpSz = subPaneWithCategs.getComponentCount()-1;
+            for(int i = arLsCmpSz;
+                    i > subPaneWithCategs.getComponentZOrder(cb);
+                    i--) {
+                subPaneWithCategs.remove(i);
+
+            }
+
+            catFull = "";
+            for(int i =0; i < subPaneWithCategs.getComponentCount(); i++)
+                catFull+=((JComboBox) subPaneWithCategs.getComponent(i)).getSelectedItem().toString()+ "/";
+
+            String subCatName = (String) cb.getSelectedItem();
+            if(!subCatName.equals("%")) {
+
+
+
+                Vector sCats = mainThread.getParList().getSubCatNames(catFull);
+                if (sCats != null) subPaneWithCategs.add(new JComboBox(sCats));
+            }
+        };
+
+
+        subPaneWithCategs = new JPanel();
+        subPaneWithCategs.setLayout(new BoxLayout(subPaneWithCategs, BoxLayout.Y_AXIS));
+
+        subPaneWithCategs.addContainerListener(new ContainerListener() {
+            @Override
+            public void componentAdded(ContainerEvent e) {
+                JComboBox cb = (JComboBox)e.getChild();
+                cb.setSelectedItem("%");
+                cb.addActionListener(combbCatsLsnr);
+                //Kategorii.add(cb);
+
+
+                subPaneWithCategs.revalidate();
+            }
+
+            @Override
+            public void componentRemoved(ContainerEvent e) {
+                subPaneWithCategs.revalidate();
+            }
+        });
+
+        //--root_categories_init
+        subPaneWithCategs.add(new JComboBox(mainThread.getParList().getSubCatNames(null)));
 
             workPanel.add(new JLabel("Найти:"));
             workPanel.add(search);
-            for(int d=0; d<Kategorii.size(); d++)
-            {
-                Kategorii.get(d).setSelectedItem("%");
-                subPaneWithCategs.add(Kategorii.get(d));
-            }
+
             workPanel.add(subPaneWithCategs);
             workPanel.add(show);
             workPanel.add(discon);
@@ -396,19 +442,20 @@ public class Graphic_main extends JFrame{
 
     }
 
-    private void searchAction()
+    private void searchAction(String catFull)
     {
         try {
             if(stus_stipp_pane.isAncestorOf(scPfSTIPPTable)){ stus_stipp_pane.remove(scPfSTIPPTable); }
             //================Поисковик=================================
 
-            String catFull = "";
-            for(int i =0; i<Kategorii.size(); i++) catFull+=Kategorii.get(i).getSelectedItem().toString()+ "%";
+            //String catFull = "";
+            //for(int i =0; i<Kategorii.size(); i++) catFull+=Kategorii.get(i).getSelectedItem().toString()+ "%";
 
-            String catFULL = "%" + catFull;
+            String catFULL = catFull;
+            catFULL = catFULL.substring(0, catFULL.length()-1) + "%";
 
-            StringBuilder cFull = new StringBuilder(catFull);
-            cFull.deleteCharAt(cFull.length() - 1);
+            //StringBuilder cFull = new StringBuilder(catFull);
+            //cFull.deleteCharAt(cFull.length() - 1);
 
 
 

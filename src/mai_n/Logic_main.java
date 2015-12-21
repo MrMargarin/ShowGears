@@ -150,7 +150,7 @@ public class Logic_main {
 
         srch = "select * from "+ getStusTName() +" where "+namField+" like \'%" + search + "%\' and CatName like \'"+categ+"\'";
 
-        //System.out.println(srch);
+        System.out.println("Запрос для поиска товаров: "+srch);
         stus_tab.fillTable(srch);
     }
 
